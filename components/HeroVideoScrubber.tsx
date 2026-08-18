@@ -35,7 +35,7 @@ export interface HeroVideoScrubberProps {
 }
 
 const HeroVideoScrubber: React.FC<HeroVideoScrubberProps> = ({
-  videoFramePath = '/videos/video_1_frames/frame_',
+  videoFramePath = '/videos/video_3_frames/frame_',
   totalFrames = 300,
   overlayTitle = 'We Design Smiles - Professional Dental Care',
   overlayDescription = 'Your journey to perfect smiles starts here.',

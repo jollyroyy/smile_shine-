@@ -60,11 +60,11 @@ export default function HomePage() {
       <Navigation sections={navSections} />
 
       {/* ========================================================================= */}
-      {/* 1. HERO VIDEO SECTION 1: Virtual Tour (Reception -> Doctor Chair)        */}
+      {/* 1. HERO VIDEO SECTION 1: Clinic Flow & Comfort (Video 3)                  */}
       {/* ========================================================================= */}
       <div id="videos">
         <HeroVideoScrubber
-          videoFramePath="/videos/video_1_frames/frame_"
+          videoFramePath="/videos/video_3_frames/frame_"
           totalFrames={300}
           overlayTitle="We Design Smiles - Professional Dental Care"
           overlayDescription="Your journey to perfect smiles starts here."
@@ -136,11 +136,11 @@ export default function HomePage() {
       </div>
 
       {/* ========================================================================= */}
-      {/* 3. VIDEO SECTION 3: Clinic Continuity & Flow (Lounge -> Active Suites)    */}
+      {/* 3. VIDEO SECTION 3: Virtual Tour & Walkthrough (Video 1)                  */}
       {/* ========================================================================= */}
       <div>
         <VideoSection3
-          videoFramePath="/videos/video_3_frames/frame_"
+          videoFramePath="/videos/video_1_frames/frame_"
           totalFrames={300}
           title="Professional Clinic Design - Built for Your Comfort"
           description="Every space designed for your peace of mind."
