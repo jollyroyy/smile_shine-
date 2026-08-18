@@ -2,52 +2,216 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ===========================================================================
+   TOKENS  ·  primitive -> semantic
+   The palette is four neutrals and one accent. The accent is a rule colour and
+   a marker colour; it is never a fill behind text and never a gradient. What
+   used to be a three-stop cyan gradient on every button is now a single ivory
+   fill, which is both the highest-contrast pairing available on this ground
+   and the one that stops the page looking like every other dark landing page.
+   =========================================================================== */
+:root {
+  /* ground */
+  --ink:        #0B0B0C;   /* page */
+  --ink-raise:  #131315;   /* raised surface */
+  --ink-sink:   #080809;   /* recessed surface */
+  --line:       rgba(244, 241, 236, 0.09);
+  --line-firm:  rgba(244, 241, 236, 0.16);
+
+  /* type */
+  --bone:       #F4F1EC;   /* primary — 17.9:1 on ink */
+  --bone-dim:   #A8A49D;   /* secondary — 8.5:1 */
+  --bone-mute:  #6E6B66;   /* tertiary — 3.6:1, large or non-essential only */
+
+  /* accent */
+  --mint:       #8FC9BE;   /* 10.5:1 on ink */
+  --mint-deep:  #2E4A46;
+  --mint-wash:  rgba(143, 201, 190, 0.10);
+
+  --danger:     #E4796B;
+
+  /* radius — 2px, not 24px. Sharp edges read as precise; the blobby
+     rounded-3xl on every card was the single loudest template tell. */
+  --r-sm: 2px;
+  --r-md: 4px;
+  --r-pill: 999px;
+
+  /* type scale, fluid */
+  --t-hero:    clamp(2.75rem, 7vw, 6.5rem);
+  --t-display: clamp(2rem, 4.6vw, 3.75rem);
+  --t-title:   clamp(1.375rem, 2.2vw, 1.875rem);
+  --t-lead:    clamp(1.0625rem, 1.4vw, 1.25rem);
+
+  --ease: cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+/* ===========================================================================
+   BASE
+   =========================================================================== */
 @layer base {
   html {
     scroll-behavior: smooth;
     color-scheme: dark;
+    -webkit-text-size-adjust: 100%;
   }
 
   body {
-    background-color: #020617;
-    color: #f8fafc;
+    background: var(--ink);
+    color: var(--bone);
+    font-family: var(--font-text), ui-sans-serif, system-ui, sans-serif;
+    font-size: 16px;            /* base 16, not the 10-11px the old page set */
+    line-height: 1.65;
     overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
   }
 
-  h1, h2, h3, h4, h5, h6 {
+  ::selection {
+    background: var(--mint);
+    color: var(--ink);
+  }
+
+  /* One visible focus treatment for the whole site. */
+  :focus-visible {
+    outline: 2px solid var(--mint);
+    outline-offset: 3px;
+    border-radius: var(--r-sm);
+  }
+
+  button,
+  [role='button'],
+  a[href],
+  summary {
+    cursor: pointer;
+  }
+
+  /* Reduced motion: the scroll-scrub sequences still render, they simply stop
+     being driven by the wheel. Handled per-component; this covers the rest. */
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}
+
+/* ===========================================================================
+   COMPONENT LAYER
+   Kept deliberately small. Anything used once stays in the component file;
+   only genuinely shared surfaces earn a class here, so section paddings and
+   card styles cannot quietly cancel each other out.
+   =========================================================================== */
+@layer components {
+  /* -- display type ------------------------------------------------------ */
+  .u-hero {
+    font-family: var(--font-display), Georgia, serif;
+    font-size: var(--t-hero);
+    line-height: 0.95;
     letter-spacing: -0.02em;
+    font-weight: 400;
+  }
+
+  .u-display {
+    font-family: var(--font-display), Georgia, serif;
+    font-size: var(--t-display);
+    line-height: 1.03;
+    letter-spacing: -0.015em;
+    font-weight: 400;
+  }
+
+  .u-title {
+    font-family: var(--font-display), Georgia, serif;
+    font-size: var(--t-title);
+    line-height: 1.18;
+    letter-spacing: -0.01em;
+    font-weight: 400;
+  }
+
+  .u-lead {
+    font-size: var(--t-lead);
+    line-height: 1.6;
+    color: var(--bone-dim);
+    font-weight: 300;
+  }
+
+  /* The one tracked style on the site. Used for eyebrows and field labels and
+     nowhere else -- the old page ran this treatment about sixty times. */
+  .u-label {
+    font-size: 0.6875rem;
+    line-height: 1;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    font-weight: 500;
+    color: var(--bone-mute);
+  }
+
+  /* Numerals set in the display serif. Its figures are the best thing in the
+     family, so the facts strip and the shade scale both use them. */
+  .u-figure {
+    font-family: var(--font-display), Georgia, serif;
+    font-weight: 400;
+    letter-spacing: -0.03em;
+    font-variant-numeric: lining-nums tabular-nums;
+  }
+
+  /* -- buttons ----------------------------------------------------------- */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.625rem;
+    min-height: 48px;              /* above the 44px touch floor */
+    padding: 0 1.75rem;
+    border-radius: var(--r-pill);
+    font-size: 0.9375rem;
+    font-weight: 500;
+    letter-spacing: 0.005em;
+    white-space: nowrap;
+    transition: background-color 220ms var(--ease), color 220ms var(--ease),
+                border-color 220ms var(--ease), transform 220ms var(--ease);
+  }
+
+  .btn-primary {
+    background: var(--bone);
+    color: var(--ink);
+    border: 1px solid var(--bone);
+  }
+  .btn-primary:hover { background: #fff; border-color: #fff; }
+  .btn-primary:active { transform: translateY(1px); }
+
+  .btn-ghost {
+    background: transparent;
+    color: var(--bone);
+    border: 1px solid var(--line-firm);
+  }
+  .btn-ghost:hover { border-color: var(--bone-dim); background: rgba(244, 241, 236, 0.04); }
+  .btn-ghost:active { transform: translateY(1px); }
+
+  /* -- surfaces ---------------------------------------------------------- */
+  .surface {
+    background: var(--ink-raise);
+    border: 1px solid var(--line);
+    border-radius: var(--r-sm);
+  }
+
+  .rule {
+    height: 1px;
+    background: var(--line);
+    border: 0;
   }
 }
 
-/* Custom refined luxury scrollbar */
-::-webkit-scrollbar {
-  width: 6px;
-}
+/* ===========================================================================
+   SCROLLBAR
+   =========================================================================== */
+::-webkit-scrollbar { width: 10px; }
+::-webkit-scrollbar-track { background: var(--ink); }
+::-webkit-scrollbar-thumb { background: #26262a; border: 3px solid var(--ink); border-radius: 999px; }
+::-webkit-scrollbar-thumb:hover { background: var(--mint-deep); }
 
-::-webkit-scrollbar-track {
-  background: #020617;
-}
-
-::-webkit-scrollbar-thumb {
-  background: #1e293b;
-  border-radius: 9999px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: #06b6d4;
-}
-
-/* Glassmorphism & subtle aura glows */
-.glass-panel {
-  background: rgba(15, 23, 42, 0.75);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-}
-
-.glass-pill {
-  background: rgba(15, 23, 42, 0.6);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-}
+/* Native date/time pickers sit on a dark ground here. */
+input[type='date']::-webkit-calendar-picker-indicator { filter: invert(0.75); }

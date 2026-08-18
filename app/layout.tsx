@@ -1,55 +1,56 @@
 import type { Metadata } from 'next';
-import { Plus_Jakarta_Sans, Cormorant_Garamond, Outfit } from 'next/font/google';
+import { Instrument_Serif, Hanken_Grotesk } from 'next/font/google';
+import { CLINIC } from '@/lib/clinic';
 import './globals.css';
 
-const plusJakarta = Plus_Jakarta_Sans({
-  subsets: ['latin'],
-  variable: '--font-sans',
-  display: 'swap',
-});
+/* Two families, not three.
+   Instrument Serif carries every display line: a modern high-contrast serif
+   whose hairlines run into glossy thick stems, which is the same modulation
+   enamel has under a light. It only ships one weight, which is the point --
+   size and case do the work that a weight axis would otherwise be asked to do.
+   Hanken Grotesk sets everything a patient actually has to read. It is a warm
+   humanist grotesque that holds up at 14-16px, where the old stack was setting
+   10px tracked type and losing legibility to decoration. */
 
-const cormorant = Cormorant_Garamond({
+const display = Instrument_Serif({
   subsets: ['latin'],
-  weight: ['300', '400', '500', '600', '700'],
-  variable: '--font-serif',
-  display: 'swap',
-});
-
-const outfit = Outfit({
-  subsets: ['latin'],
-  weight: ['400', '500', '600', '700', '800', '900'],
+  weight: '400',
+  style: ['normal', 'italic'],
   variable: '--font-display',
   display: 'swap',
 });
 
+const text = Hanken_Grotesk({
+  subsets: ['latin'],
+  variable: '--font-text',
+  display: 'swap',
+});
+
 export const metadata: Metadata = {
-  title: 'Smile Shine | Haute Dental Aesthetics & Precision Care',
+  title: `${CLINIC.name} — Dentist in ${CLINIC.neighbourhood}, ${CLINIC.city}`,
   description:
-    'Step into Smile Shine — an haute dental sanctuary in Vadodara blending biometric 3D engineering with bespoke smile artistry. Experience our seamless interactive 3D virtual walkthroughs.',
+    'Veneers, implants and aligners, planned in 3D and matched by hand. Scan, plan and quote in a single visit, so you know the number before anything begins.',
   keywords: [
-    'Smile Shine',
-    'Smile Shine Dental Clinic',
-    'Luxury Dentistry Vadodara',
-    'Cosmetic Dentistry',
-    'Porcelain Veneers',
-    'Digital Smile Design',
-    'Dental Implants',
+    'dentist Vadodara',
+    'dental clinic Alkapuri',
+    'veneers Vadodara',
+    'dental implants Vadodara',
+    'clear aligners Vadodara',
+    'teeth whitening Vadodara',
   ],
+  openGraph: {
+    title: `${CLINIC.name} — Dentist in ${CLINIC.neighbourhood}, ${CLINIC.city}`,
+    description:
+      'Veneers, implants and aligners, planned in 3D and matched by hand. One visit to scan, plan and quote.',
+    type: 'website',
+    locale: 'en_IN',
+  },
 };
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html
-      lang="en"
-      className={`scroll-smooth ${plusJakarta.variable} ${cormorant.variable} ${outfit.variable}`}
-    >
-      <body className="bg-slate-950 text-slate-100 font-sans antialiased selection:bg-cyan-400 selection:text-slate-950">
-        {children}
-      </body>
+    <html lang="en-IN" className={`${display.variable} ${text.variable}`}>
+      <body>{children}</body>
     </html>
   );
 }

@@ -1,96 +1,98 @@
-import React from 'react';
-import Link from 'next/link';
+import { CLINIC } from '@/lib/clinic';
+import { TREATMENTS } from '@/lib/treatments';
 
-export const Footer: React.FC = () => {
+export default function Footer() {
   return (
-    <footer className="relative z-30 bg-slate-950 border-t border-white/[0.06] text-slate-400 text-xs py-20 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-12 mb-16">
-        {/* Brand Column */}
-        <div className="lg:col-span-2 space-y-5">
-          <div className="flex items-center gap-3.5">
-            <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-cyan-500 via-sky-400 to-teal-300 p-[1px] shadow-md">
-              <div className="w-full h-full rounded-[15px] bg-slate-950 flex items-center justify-center">
-                <svg className="w-5 h-5 text-cyan-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
-                  <path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2z" />
-                  <path d="M8 13.5s1.5 2.5 4 2.5 4-2.5 4-2.5" />
-                </svg>
-              </div>
-            </div>
-            <div className="flex flex-col">
-              <span className="text-lg font-extrabold tracking-[0.12em] text-white uppercase font-display leading-none">
-                Smile <span className="font-light tracking-[0.18em] text-cyan-400">Shine</span>
-              </span>
-              <span className="text-[9px] font-medium tracking-[0.25em] text-slate-400 uppercase mt-1">
-                Haute Dental Studio
-              </span>
+    <footer className="border-t border-line bg-ink px-5 py-20 sm:px-8">
+      <div className="mx-auto max-w-page">
+        <div className="grid gap-12 sm:grid-cols-12">
+          {/* Practice */}
+          <div className="sm:col-span-5">
+            <span className="font-display text-3xl text-bone">{CLINIC.name}</span>
+            <p className="mt-4 max-w-[38ch] text-[0.9375rem] text-bone-dim">
+              A dental practice on RC Dutt Road. Veneers, implants and aligners, planned in 3D and
+              matched by hand.
+            </p>
+            <div className="mt-6 text-[0.875rem] text-bone-mute">
+              <p>{CLINIC.address.line1}</p>
+              <p>{CLINIC.address.line2}</p>
+              <p>{CLINIC.address.city}</p>
             </div>
           </div>
-          <p className="text-slate-400 max-w-sm text-xs leading-relaxed">
-            Pioneering the intersection of cutting-edge biometric dental engineering and bespoke cosmetic artistry. Transforming confidence one radiant smile at a time.
-          </p>
-          <div className="text-[10px] text-slate-500 font-mono">
-            301-304, Signature Elite Arcade, RC Dutt Road, Alkapuri, Vadodara, Gujarat 390007
+
+          {/* Treatments */}
+          <div className="sm:col-span-3">
+            <span className="u-label">Treatments</span>
+            <ul className="mt-5 space-y-2.5">
+              {TREATMENTS.slice(0, 5).map((t) => (
+                <li key={t.id}>
+                  <a
+                    href="#treatments"
+                    className="text-[0.9375rem] text-bone-dim transition-colors hover:text-bone"
+                  >
+                    {t.name}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Contact */}
+          <div className="sm:col-span-4">
+            <span className="u-label">Get in touch</span>
+            <a
+              href={CLINIC.phoneHref}
+              className="mt-4 block font-display text-2xl text-bone transition-colors hover:text-mint"
+            >
+              {CLINIC.phone}
+            </a>
+            <a
+              href={'mailto:' + CLINIC.email}
+              className="mt-3 block text-[0.9375rem] text-bone-dim transition-colors hover:text-bone"
+            >
+              {CLINIC.email}
+            </a>
+            <a
+              href={CLINIC.whatsapp}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mt-3 block text-[0.9375rem] text-mint"
+            >
+              WhatsApp
+            </a>
+            <div className="mt-6">
+              {CLINIC.hours.map((h) => (
+                <div
+                  key={h.days}
+                  className="flex items-baseline justify-between gap-6 text-[0.875rem]"
+                >
+                  <span className="text-bone-mute">{h.days}</span>
+                  <span className="text-bone-dim">{h.time}</span>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
 
-        {/* Quick Links */}
-        <div>
-          <span className="block font-semibold text-white uppercase tracking-[0.2em] text-[11px] mb-4">
-            Navigation
+        <div className="mt-16 flex flex-col items-start justify-between gap-4 border-t border-line pt-8 text-[0.8125rem] text-bone-mute sm:flex-row sm:items-center">
+          <span>
+            © {new Date().getFullYear()} {CLINIC.name}. Vadodara, Gujarat.
           </span>
-          <ul className="space-y-2.5 text-xs text-slate-400">
-            <li><Link href="#home" className="hover:text-cyan-300 transition-colors">Home Studio</Link></li>
-            <li><Link href="#videos" className="hover:text-cyan-300 transition-colors">Virtual Tour</Link></li>
-            <li><Link href="#gallery" className="hover:text-cyan-300 transition-colors">Transformations</Link></li>
-            <li><Link href="#suites" className="hover:text-cyan-300 transition-colors">Clinic Suites & Flow</Link></li>
-            <li><Link href="#services" className="hover:text-cyan-300 transition-colors">Curated Treatments</Link></li>
-            <li><Link href="#about" className="hover:text-cyan-300 transition-colors">About Our Masters</Link></li>
+          {/*
+            These three are plain text, not links -- no privacy policy, terms
+            or DPDP notice page exists yet. They must become real <a> links
+            before launch. The statute that applies to an Indian dental
+            practice's patient records is the Digital Personal Data
+            Protection Act, 2023 (DPDP) -- not HIPAA, which is US law and
+            has no bearing here.
+          */}
+          <ul className="flex flex-wrap gap-x-6 gap-y-2">
+            <li><span>Privacy</span></li>
+            <li><span>Terms</span></li>
+            <li><span>Patient data (DPDP Act, 2023)</span></li>
           </ul>
-        </div>
-
-        {/* Treatments */}
-        <div>
-          <span className="block font-semibold text-white uppercase tracking-[0.2em] text-[11px] mb-4">
-            Cosmetic Atelier
-          </span>
-          <ul className="space-y-2.5 text-xs text-slate-400">
-            <li><Link href="#services" className="hover:text-cyan-300 transition-colors">Digital Smile Design</Link></li>
-            <li><Link href="#services" className="hover:text-cyan-300 transition-colors">Handcrafted Veneers</Link></li>
-            <li><Link href="#services" className="hover:text-cyan-300 transition-colors">Photonic Laser Whitening</Link></li>
-            <li><Link href="#services" className="hover:text-cyan-300 transition-colors">Guided Implants</Link></li>
-            <li><Link href="#services" className="hover:text-cyan-300 transition-colors">Diamond+ Clear Aligners</Link></li>
-            <li><Link href="#services" className="hover:text-cyan-300 transition-colors">Sedation Serenity Care</Link></li>
-          </ul>
-        </div>
-
-        {/* Contact & Hours */}
-        <div>
-          <span className="block font-semibold text-white uppercase tracking-[0.2em] text-[11px] mb-4">
-            Direct Concierge
-          </span>
-          <div className="space-y-2 text-xs">
-            <div className="text-white font-semibold">+91 98250 12345</div>
-            <div className="text-cyan-400 text-[11px]">24/7 Dental Emergency On-Call</div>
-            <div className="text-slate-400">concierge@smileshine.com</div>
-            <div className="pt-2 text-[10px] text-slate-500 leading-normal">
-              State-of-the-art accredited clinical dental studio in Vadodara, Gujarat.
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div className="max-w-7xl mx-auto pt-8 border-t border-white/[0.04] flex flex-col sm:flex-row items-center justify-between gap-4 text-[11px] text-slate-500">
-        <div>
-          &copy; {new Date().getFullYear()} Smile Shine Dental Studio. All Rights Reserved.
-        </div>
-        <div className="flex items-center gap-6">
-          <span className="hover:text-slate-400 cursor-pointer">Privacy Protocol</span>
-          <span className="hover:text-slate-400 cursor-pointer">HIPAA Compliance</span>
-          <span className="hover:text-slate-400 cursor-pointer">Terms of Concierge</span>
         </div>
       </div>
     </footer>
   );
-};
-
-export default Footer;
+}

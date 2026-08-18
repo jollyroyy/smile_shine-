@@ -1,189 +1,162 @@
-'use client';
-
 import React from 'react';
-import dynamic from 'next/dynamic';
+
 import Navigation from '@/components/Navigation';
-import ServicesSection from '@/components/ServicesSection';
-import AboutSection from '@/components/AboutSection';
-import LocationSection from '@/components/LocationSection';
-import BookingForm from '@/components/BookingForm';
+import ScrollSequence, { Beat } from '@/components/ScrollSequence';
+import ShadeProgress from '@/components/ShadeProgress';
+import Facts from '@/components/Facts';
+import Treatments from '@/components/Treatments';
+import ShadeMatch from '@/components/ShadeMatch';
+import Voices from '@/components/Voices';
+import Practice from '@/components/Practice';
+import FAQ from '@/components/FAQ';
+import Visit from '@/components/Visit';
+import Booking from '@/components/Booking';
 import Footer from '@/components/Footer';
+import StickyBook from '@/components/StickyBook';
+import { BookingProvider } from '@/components/BookingWidget';
+import { CLINIC } from '@/lib/clinic';
 
-// Dynamic imports for the interactive video scrubber components for fast page loading
-const HeroVideoScrubber = dynamic(() => import('@/components/HeroVideoScrubber'), {
-  ssr: false,
-  loading: () => (
-    <div className="h-screen w-full bg-slate-950 flex items-center justify-center text-cyan-400">
-      <div className="w-10 h-10 border-2 border-cyan-500/20 border-t-cyan-400 rounded-full animate-spin" />
-    </div>
-  ),
-});
+/* The three sequences still run back to back with nothing between them, which
+   is the one thing about this page worth protecting. What has changed is that
+   each one now says three things across its scroll instead of holding a single
+   title for 350vh -- the scrub had no reason to be that long when the caption
+   never moved.
 
-const ResultsVideoScrubber = dynamic(() => import('@/components/ResultsVideoScrubber'), {
-  ssr: false,
-  loading: () => (
-    <div className="h-screen w-full bg-slate-950 flex items-center justify-center text-cyan-400">
-      <div className="w-10 h-10 border-2 border-cyan-500/20 border-t-cyan-400 rounded-full animate-spin" />
-    </div>
-  ),
-});
+   Each sequence is also a heading level and real text in the served HTML. The
+   previous version loaded all three through `dynamic(..., { ssr: false })`, so
+   a crawler arriving at a dental practice's home page found three empty divs
+   and a spinner. Nothing here touches the browser outside an effect, so there
+   is no reason not to render it. */
 
-const VideoSection3 = dynamic(() => import('@/components/VideoSection3'), {
-  ssr: false,
-  loading: () => (
-    <div className="h-screen w-full bg-slate-950 flex items-center justify-center text-cyan-400">
-      <div className="w-10 h-10 border-2 border-cyan-500/20 border-t-cyan-400 rounded-full animate-spin" />
-    </div>
-  ),
-});
+const ARRIVAL: Beat[] = [
+  {
+    title: 'Good dental work is the kind nobody notices.',
+    note: 'Veneers, implants and aligners on RC Dutt Road, Alkapuri.',
+  },
+  {
+    title: 'Three rooms. One appointment at a time.',
+    note: 'Which is why nobody here is working against a clock.',
+  },
+  {
+    title: 'Come and look before you commit to anything.',
+    note: 'The consultation runs forty minutes. Nothing is done that day unless you ask for it.',
+  },
+];
 
-/**
- * Main Landing Page Component for "Smile Shine" Dental Clinic.
- * Features 3 seamless contiguous video sequences with zero interruptions between them,
- * followed by curated treatments, about master doctors, location map, and booking concierge.
- */
+const WORK: Beat[] = [
+  {
+    title: 'Every one of these was matched by hand.',
+    note: 'The shade is chosen at the chair, against the teeth beside it, rather than picked off a screen.',
+  },
+  {
+    title: 'You should not be able to tell which ones we did.',
+    note: 'That is the whole brief.',
+  },
+  {
+    title: 'You see yours before anything is permanent.',
+    note: 'We design it, you look at it, and we keep changing it until it is right.',
+  },
+];
+
+/* Sequence order follows what is actually on screen, which an earlier pass got
+   wrong: the results copy was running over footage of the waiting room while
+   the film of the dentist working played under copy about pricing. video_1
+   opens on treatment and ends on the wall of before-and-afters, so it carries
+   WORK. video_2 is arrival, corridor and front desk, so it carries the visit. */
+const CHAIR: Beat[] = [
+  {
+    title: 'The part people dread takes about forty minutes.',
+    note: 'We check the anaesthetic has taken before we start. Every time.',
+  },
+  {
+    title: 'You will know the number before you sit down.',
+    note: 'A written quote after the consultation, and it does not move without your say-so.',
+  },
+  {
+    title: 'Then you decide how much of it to do.',
+    note: 'Some of it can wait. We will tell you which.',
+  },
+];
+
+/* Local search is most of how a practice gets found, and none of it was here.
+   Every value comes from the same config block as the visible page, so the two
+   cannot drift apart. */
+const schema = {
+  '@context': 'https://schema.org',
+  '@type': 'Dentist',
+  name: CLINIC.name,
+  description:
+    'Dental practice in Alkapuri, Vadodara. Veneers, implants, clear aligners, whitening, root canals and routine care.',
+  telephone: CLINIC.phone,
+  email: CLINIC.email,
+  address: {
+    '@type': 'PostalAddress',
+    streetAddress: CLINIC.address.line1 + ', ' + CLINIC.address.line2,
+    addressLocality: CLINIC.city,
+    addressRegion: 'Gujarat',
+    postalCode: '390007',
+    addressCountry: 'IN',
+  },
+  areaServed: CLINIC.city,
+  availableLanguage: ['English', 'Hindi', 'Gujarati'],
+  openingHours: ['Mo-Fr 09:00-18:00', 'Sa 10:00-16:00'],
+};
+
 export default function HomePage() {
-  const navSections = [
-    { id: 'home', label: 'Home', href: '#home' },
-    { id: 'videos', label: 'Virtual Tour', href: '#videos' },
-    { id: 'gallery', label: 'Transformations', href: '#gallery' },
-    { id: 'suites', label: 'Suites & Flow', href: '#suites' },
-    { id: 'services', label: 'Treatments', href: '#services' },
-    { id: 'about', label: 'About Us', href: '#about' },
-    { id: 'location', label: 'Location', href: '#location' },
-    { id: 'booking', label: 'Reserve Appointment', href: '#booking', isCta: true },
-  ];
-
   return (
-    <div
-      id="home"
-      className="min-h-screen bg-slate-950 text-slate-100 selection:bg-cyan-400 selection:text-slate-950 font-sans antialiased scroll-smooth"
-    >
-      {/* Sticky Haute Navigation Bar */}
-      <Navigation sections={navSections} />
+    <BookingProvider>
+      <div id="top">
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
+        />
 
-      {/* ========================================================================= */}
-      {/* 1. SEAMLESS CONTIGUOUS VIDEO EXPERIENCE: 3 VIDEOS WITH ZERO INTERRUPTION */}
-      {/* ========================================================================= */}
-      <div className="relative w-full">
-        {/* VIDEO 1: Virtual Tour Entrance (Video 3 Frames) */}
-        <div id="videos">
-          <HeroVideoScrubber
-            videoFramePath="/videos/video_3_frames/frame_"
-            totalFrames={300}
-            overlayTitle="Smile Shine — Haute Dental Artistry"
-            overlayDescription="Where clinical master-craft meets pure sanctuary serenity."
-            scrollContainerHeight="350vh"
-          />
-        </div>
+        <Navigation />
+        <ShadeProgress />
 
-        {/* VIDEO 2: Smile Transformations & Results (Video 2 Frames) */}
-        <div id="gallery">
-          <ResultsVideoScrubber
-            videoFramePath="/videos/video_2_frames/frame_"
-            totalFrames={300}
-            overlayTitle="Smile Shine Transformations — Before & After Artistry"
-            overlayDescription="Witness natural facial harmony sculpted by master ceramists."
-            scrollContainerHeight="350vh"
+        <main>
+          {/* Three sequences, contiguous. */}
+          <ScrollSequence
+            id="tour"
+            framePath="/videos/video_3_frames/frame_"
+            beats={ARRIVAL}
+            label="Arriving at the practice"
+            lead
+            as="h1"
           />
-        </div>
+          <ScrollSequence
+            id="results"
+            framePath="/videos/video_1_frames/frame_"
+            beats={WORK}
+            label="Work the practice has done"
+          />
+          {/* Stops at 285. The generator burned an end card over the last fifteen
+              frames of this clip -- a script wordmark reading "Lisa / CHIIFE
+              KNUSTAR", which is the model's attempt at signage and not a word in
+              any language. It fades in at frame 286, so the sequence simply ends
+              before it. Dropping 5% of the run is not perceptible in the scrub and
+              leaves no retouching to notice. The other two clips are clean to 300. */}
+          <ScrollSequence
+            id="visiting"
+            framePath="/videos/video_2_frames/frame_"
+            totalFrames={285}
+            beats={CHAIR}
+            label="What a visit is like"
+          />
 
-        {/* VIDEO 3: Operatory Suites & Patient Flow (Video 1 Frames) */}
-        <div id="suites">
-          <VideoSection3
-            videoFramePath="/videos/video_1_frames/frame_"
-            totalFrames={300}
-            title="Smile Shine Sanctuary — Designed for Ultimate Comfort"
-            description="Every dimension engineered for tranquility, luxury, and peace of mind."
-            scrollContainerHeight="350vh"
-          />
-        </div>
+          <Facts />
+          <Treatments />
+          <ShadeMatch />
+          <Voices />
+          <Practice />
+          <FAQ />
+          <Visit />
+          <Booking />
+        </main>
+
+        <Footer />
+        <StickyBook />
       </div>
-
-      {/* ========================================================================= */}
-      {/* 2. EDITORIAL PHILOSOPHY QUOTE                                             */}
-      {/* ========================================================================= */}
-      <section className="relative z-30 bg-slate-950 py-24 sm:py-32 px-6 text-center border-t border-white/[0.06]">
-        <div className="max-w-4xl mx-auto space-y-6">
-          <div className="w-12 h-12 rounded-full bg-slate-900 border border-cyan-500/30 flex items-center justify-center mx-auto text-xl font-serif text-cyan-300 shadow-lg shadow-cyan-500/10">
-            “
-          </div>
-          <p className="font-serif text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-light italic text-slate-200 leading-snug tracking-tight">
-            &ldquo;Every curve, contour, and shade of ceramic is individually sculpted to harmonize with your innate facial beauty and radiance.&rdquo;
-          </p>
-          <div className="pt-2">
-            <span className="text-xs sm:text-sm font-semibold uppercase tracking-[0.25em] text-cyan-400 font-display">
-              Dr. Elena Vance
-            </span>
-            <span className="text-slate-500 text-xs block mt-1 tracking-wider uppercase">
-              Fellow, American Academy of Cosmetic Dentistry · Founder, Smile Shine
-            </span>
-          </div>
-        </div>
-      </section>
-
-      {/* ========================================================================= */}
-      {/* 3. CLINIC KEY METRICS & EXCELLENCE PILLARS                                */}
-      {/* ========================================================================= */}
-      <section className="relative z-30 bg-slate-900/60 backdrop-blur-2xl border-y border-white/[0.06] py-16 px-6">
-        <div className="max-w-6xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-10 text-center">
-          <div>
-            <div className="font-serif text-4xl sm:text-5xl lg:text-6xl font-light text-white tracking-tight">
-              15,000<span className="text-cyan-400 font-normal">+</span>
-            </div>
-            <div className="text-[11px] sm:text-xs text-slate-400 mt-2 font-medium uppercase tracking-[0.2em]">
-              Smiles Perfected
-            </div>
-          </div>
-          <div>
-            <div className="font-serif text-4xl sm:text-5xl lg:text-6xl font-light text-white tracking-tight">
-              99.8<span className="text-cyan-400 font-normal">%</span>
-            </div>
-            <div className="text-[11px] sm:text-xs text-slate-400 mt-2 font-medium uppercase tracking-[0.2em]">
-              Patient Satisfaction
-            </div>
-          </div>
-          <div>
-            <div className="font-serif text-4xl sm:text-5xl lg:text-6xl font-light text-white tracking-tight">
-              25<span className="text-cyan-400 font-normal">+</span>
-            </div>
-            <div className="text-[11px] sm:text-xs text-slate-400 mt-2 font-medium uppercase tracking-[0.2em]">
-              Years Clinical Mastery
-            </div>
-          </div>
-          <div>
-            <div className="font-serif text-4xl sm:text-5xl lg:text-6xl font-light text-white tracking-tight">
-              100<span className="text-cyan-400 font-normal">%</span>
-            </div>
-            <div className="text-[11px] sm:text-xs text-slate-400 mt-2 font-medium uppercase tracking-[0.2em]">
-              Digital 3D Workflow
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ========================================================================= */}
-      {/* 4. CURATED TREATMENTS & SERVICES MENU                                     */}
-      {/* ========================================================================= */}
-      <ServicesSection />
-
-      {/* ========================================================================= */}
-      {/* 5. ABOUT US & MASTER DOCTOR TEAM                                          */}
-      {/* ========================================================================= */}
-      <AboutSection />
-
-      {/* ========================================================================= */}
-      {/* 6. CLINIC LOCATION & 16:9 MAP                                             */}
-      {/* ========================================================================= */}
-      <LocationSection />
-
-      {/* ========================================================================= */}
-      {/* 7. PRIVATE APPOINTMENT CONCIERGE                                          */}
-      {/* ========================================================================= */}
-      <BookingForm />
-
-      {/* Global Footer */}
-      <Footer />
-    </div>
+    </BookingProvider>
   );
 }
