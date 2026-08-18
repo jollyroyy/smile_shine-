@@ -2,50 +2,34 @@
 
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 
-/**
- * Props for the reusable VideoOverlay child component
- */
 export interface VideoOverlayProps {
-  /**
-   * Main overlay title / headline
-   */
   text?: string;
   title?: string;
-  /**
-   * Supporting description / subtext
-   */
   description?: string;
-  /**
-   * Additional custom CSS classes for the container
-   */
   className?: string;
 }
 
-/**
- * Reusable VideoOverlay component positioned at the bottom 15% of the video container
- * with a white gradient overlay (from-white/85 to-transparent).
- */
 export const VideoOverlay: React.FC<VideoOverlayProps> = ({
   text,
   title,
-  description = 'Every space designed for your peace of mind.',
+  description = 'Every dimension engineered for tranquility, luxury, and peace of mind.',
   className = '',
 }) => {
-  const displayTitle = title || text || 'Professional Clinic Design - Built for Your Comfort';
+  const displayTitle = title || text || 'Smile Shine Sanctuary — Designed for Ultimate Comfort';
 
   return (
     <div
-      className={`absolute bottom-0 inset-x-0 h-[18%] sm:h-[15%] min-h-[110px] bg-gradient-to-t from-white/85 to-transparent flex flex-col justify-end items-center pb-5 sm:pb-7 md:pb-9 px-4 z-20 pointer-events-auto backdrop-blur-[0.5px] ${className}`}
+      className={`absolute bottom-0 inset-x-0 h-[18%] sm:h-[15%] min-h-[110px] bg-gradient-to-t from-white/85 via-white/50 to-transparent flex flex-col justify-end items-center pb-5 sm:pb-7 md:pb-8 px-4 z-20 pointer-events-auto backdrop-blur-[0.5px] ${className}`}
     >
       <div className="max-w-4xl mx-auto text-center">
-        {/* Primary Headline */}
-        <h2 className="text-lg sm:text-2xl md:text-3xl lg:text-4xl font-extrabold tracking-tight text-slate-900 drop-shadow-sm leading-tight">
+        {/* Primary Haute Serif Headline */}
+        <h2 className="font-serif text-xl sm:text-2xl md:text-3xl lg:text-4xl font-semibold tracking-tight text-slate-950 drop-shadow-sm leading-tight">
           {displayTitle}
         </h2>
 
-        {/* Supporting Descriptor */}
+        {/* Subtext Descriptor */}
         {description && (
-          <p className="text-xs sm:text-sm md:text-base font-semibold text-slate-700 mt-1 sm:mt-1.5 tracking-normal leading-relaxed">
+          <p className="font-sans text-[11px] sm:text-xs md:text-sm font-semibold tracking-[0.08em] text-slate-700 mt-1 uppercase">
             {description}
           </p>
         )}
@@ -54,52 +38,23 @@ export const VideoOverlay: React.FC<VideoOverlayProps> = ({
   );
 };
 
-/**
- * Props for the VideoSection3 component
- */
 export interface VideoSection3Props {
-  /**
-   * Base path or prefix for frame images.
-   * Defaults to '/videos/video_3_frames/frame_'
-   */
   videoFramePath?: string;
-  /**
-   * Total number of frames in the sequence. Defaults to 300
-   */
   totalFrames?: number;
-  /**
-   * Heading text for the bottom overlay
-   */
   title?: string;
   text?: string;
-  /**
-   * Subtitle text for the bottom overlay
-   */
   description?: string;
-  /**
-   * Zero padding length for frame indices (e.g. 4 for '0001')
-   */
   padLength?: number;
-  /**
-   * Frame image extension ('webp', 'png', 'jpg')
-   */
   extension?: string;
-  /**
-   * Height of the scroll container to control scrub speed (e.g., '350vh')
-   */
   scrollContainerHeight?: string;
 }
 
-/**
- * VideoSection3: Third full-width video section displaying clinic continuity walkthrough
- * (empty patient area to active clinic flow) with smooth scroll frame scrubbing.
- */
 export const VideoSection3: React.FC<VideoSection3Props> = ({
-  videoFramePath = '/videos/video_3_frames/frame_',
+  videoFramePath = '/videos/video_1_frames/frame_',
   totalFrames = 300,
-  title = 'Professional Clinic Design - Built for Your Comfort',
+  title = 'Smile Shine Sanctuary — Designed for Ultimate Comfort',
   text,
-  description = 'Every space designed for your peace of mind.',
+  description = 'Every dimension engineered for tranquility, luxury, and peace of mind.',
   padLength = 4,
   extension = 'webp',
   scrollContainerHeight = '350vh',
@@ -118,7 +73,6 @@ export const VideoSection3: React.FC<VideoSection3Props> = ({
 
   const overlayTitle = text || title;
 
-  // Helper to format frame path
   const getFrameUrl = useCallback(
     (index: number) => {
       const paddedIndex = String(index).padStart(padLength, '0');
@@ -130,7 +84,6 @@ export const VideoSection3: React.FC<VideoSection3Props> = ({
     [videoFramePath, padLength, extension]
   );
 
-  // Draw frame on canvas with high-DPI crisp rendering and 16:9 aspect fit
   const renderFrameToCanvas = useCallback((img: HTMLImageElement) => {
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -146,7 +99,6 @@ export const VideoSection3: React.FC<VideoSection3Props> = ({
     ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
   }, []);
 
-  // 1. Intersection Observer for Lazy Loading
   useEffect(() => {
     const observer = new IntersectionObserver(
       ([entry]) => {
@@ -170,7 +122,6 @@ export const VideoSection3: React.FC<VideoSection3Props> = ({
     };
   }, []);
 
-  // 2. Progressive Frame Preloading (once visible)
   useEffect(() => {
     if (!isVisible) return;
 
@@ -205,13 +156,11 @@ export const VideoSection3: React.FC<VideoSection3Props> = ({
       });
     };
 
-    // Priority batch 1: First 20 frames for instant interaction
     const initialBatch = Array.from({ length: Math.min(20, totalFrames) }, (_, i) => i + 1);
     Promise.all(initialBatch.map(preloadFrame)).then(() => {
       if (!isMounted) return;
       setIsLoaded(true);
 
-      // Priority batch 2: Remaining frames progressively loaded in background
       const remainingFrames = Array.from(
         { length: totalFrames - initialBatch.length },
         (_, i) => i + initialBatch.length + 1
@@ -229,7 +178,6 @@ export const VideoSection3: React.FC<VideoSection3Props> = ({
     };
   }, [isVisible, totalFrames, getFrameUrl, renderFrameToCanvas]);
 
-  // 3. Smooth Scroll Scrubbing with requestAnimationFrame
   useEffect(() => {
     if (!isVisible) return;
 
@@ -241,11 +189,9 @@ export const VideoSection3: React.FC<VideoSection3Props> = ({
 
       if (scrollableHeight <= 0) return;
 
-      // Progress calculation [0.0 - 1.0]
       const currentScroll = -rect.top;
       const progress = Math.min(Math.max(currentScroll / scrollableHeight, 0), 1);
 
-      // Frame mapping [1 - totalFrames]
       const targetFrame = Math.min(
         Math.max(Math.floor(progress * (totalFrames - 1)) + 1, 1),
         totalFrames
@@ -289,23 +235,15 @@ export const VideoSection3: React.FC<VideoSection3Props> = ({
     <section
       ref={containerRef}
       style={{ height: scrollContainerHeight }}
-      className="relative w-full bg-slate-950 text-slate-900 my-0 border-t border-slate-800/80"
-      aria-label="Clinic Continuity and Flow Walkthrough Section"
+      className="relative w-full bg-slate-950 text-slate-900"
+      aria-label="Smile Shine Clinic Suites Experience"
     >
-      {/* Visual Section Divider & Badge */}
-      <div className="absolute top-0 inset-x-0 z-30 flex justify-center -translate-y-1/2 pointer-events-none">
-        <div className="flex items-center gap-2 px-4 py-1.5 rounded-full bg-slate-900/90 border border-teal-500/30 backdrop-blur-md shadow-xl text-xs font-semibold uppercase tracking-wider text-teal-300">
-          <span className="w-2 h-2 rounded-full bg-teal-400 animate-pulse" />
-          <span>Section 03 : Clinic Flow & Comfort</span>
-        </div>
-      </div>
-
       {/* Sticky 100vh Viewport Container */}
       <div
         ref={stickyRef}
         className="sticky top-0 h-screen w-full overflow-hidden flex items-center justify-center bg-slate-950"
       >
-        {/* Responsive 16:9 Aspect Ratio Container */}
+        {/* 16:9 Aspect Video Container */}
         <div className="relative w-full aspect-video max-h-screen flex items-center justify-center">
           {/* Main Scrubber Canvas */}
           <canvas
@@ -313,36 +251,36 @@ export const VideoSection3: React.FC<VideoSection3Props> = ({
             className={`w-full h-full object-contain transition-opacity duration-700 ease-out ${
               isLoaded ? 'opacity-100' : 'opacity-0'
             }`}
-            aria-label={`Clinic continuity video frame ${currentFrame} of ${totalFrames}`}
+            aria-label={`Smile Shine suites frame ${currentFrame} of ${totalFrames}`}
           />
 
           {/* Loading Indicator */}
           {!isLoaded && (
-            <div className="absolute inset-0 flex flex-col items-center justify-center bg-slate-900 text-white z-10">
-              <div className="relative w-14 h-14 mb-4">
-                <div className="absolute inset-0 rounded-full border-4 border-teal-500/20 animate-ping" />
-                <div className="w-14 h-14 rounded-full border-4 border-t-teal-400 border-teal-500/30 animate-spin" />
+            <div className="absolute inset-0 flex flex-col items-center justify-center bg-slate-950 text-white z-10">
+              <div className="relative w-16 h-16 mb-5">
+                <div className="absolute inset-0 rounded-full border border-cyan-500/20 animate-ping" />
+                <div className="w-16 h-16 rounded-full border-2 border-t-cyan-400 border-cyan-500/20 animate-spin" />
               </div>
-              <p className="text-sm font-semibold tracking-wider uppercase text-teal-400">
+              <span className="text-xs font-semibold tracking-[0.25em] uppercase text-cyan-400 font-display">
                 Loading Clinic Flow
-              </p>
-              <span className="text-xs text-slate-400 mt-1">{loadProgress}%</span>
+              </span>
+              <span className="text-[11px] font-mono text-slate-500 mt-1">{loadProgress}%</span>
             </div>
           )}
 
-          {/* Tag Badge (Top Left) */}
-          <div className="absolute top-6 left-6 z-20 pointer-events-none hidden sm:flex items-center gap-2.5 px-3.5 py-1.5 rounded-full bg-slate-900/60 backdrop-blur-md border border-white/10 shadow-lg">
-            <span className="w-2 h-2 rounded-full bg-teal-400" />
-            <span className="text-xs font-semibold uppercase tracking-widest text-slate-200">
+          {/* Top Subtle Luxury Badge (Left) */}
+          <div className="absolute top-6 left-6 z-20 pointer-events-none hidden sm:flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-slate-950/70 backdrop-blur-xl border border-white/10 shadow-xl">
+            <span className="w-1.5 h-1.5 rounded-full bg-cyan-400" />
+            <span className="text-[10px] font-semibold uppercase tracking-[0.22em] text-slate-300">
               Patient Lounge → Operatory Suites
             </span>
           </div>
 
-          {/* Frame Counter Badge (Top Right) */}
-          <div className="absolute top-6 right-6 z-20 pointer-events-none hidden sm:flex items-center gap-1.5 px-3 py-1 rounded-md bg-black/40 backdrop-blur-md border border-white/10 text-[11px] font-mono text-slate-300">
-            <span>FLOW FRAME</span>
-            <span className="text-teal-400 font-bold">{String(currentFrame).padStart(3, '0')}</span>
-            <span className="text-slate-500">/</span>
+          {/* Frame Counter HUD (Right) */}
+          <div className="absolute top-6 right-6 z-20 pointer-events-none hidden sm:flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-slate-950/70 backdrop-blur-xl border border-white/10 text-[10px] font-mono text-slate-300">
+            <span className="text-slate-400">FLOW</span>
+            <span className="text-cyan-400 font-bold">{String(currentFrame).padStart(3, '0')}</span>
+            <span className="text-slate-600">/</span>
             <span>{totalFrames}</span>
           </div>
 
@@ -352,18 +290,18 @@ export const VideoSection3: React.FC<VideoSection3Props> = ({
             description={description}
           />
 
-          {/* Subtle Scroll Guide Indicator */}
+          {/* Scroll Guide Indicator */}
           <div
             className={`absolute bottom-24 sm:bottom-28 left-1/2 -translate-x-1/2 z-20 flex flex-col items-center pointer-events-none transition-opacity duration-500 ${
-              currentFrame > 25 ? 'opacity-0 pointer-events-none' : 'opacity-90'
+              currentFrame > 20 ? 'opacity-0 pointer-events-none' : 'opacity-90'
             }`}
           >
-            <div className="flex flex-col items-center gap-1.5">
-              <span className="text-[10px] sm:text-xs font-bold uppercase tracking-widest text-slate-900/80 bg-white/70 backdrop-blur-md px-3 py-0.5 rounded-full border border-white/40 shadow-sm">
-                Scroll to experience clinic
+            <div className="flex flex-col items-center gap-2">
+              <span className="text-[9px] sm:text-[10px] font-bold uppercase tracking-[0.25em] text-slate-900 bg-white/80 backdrop-blur-md px-3.5 py-0.5 rounded-full border border-white/50 shadow-md">
+                Scroll to scrub
               </span>
-              <div className="w-5 h-8 sm:w-6 sm:h-9 rounded-full border-2 border-slate-800/60 bg-white/40 backdrop-blur-sm flex justify-center p-1 shadow-md">
-                <div className="w-1.5 h-2 rounded-full bg-slate-800 animate-bounce" />
+              <div className="w-5 h-8 sm:w-5.5 sm:h-8.5 rounded-full border-2 border-slate-900/60 bg-white/40 backdrop-blur-sm flex justify-center p-1 shadow-md">
+                <div className="w-1 h-2 rounded-full bg-slate-900 animate-bounce" />
               </div>
             </div>
           </div>

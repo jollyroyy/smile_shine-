@@ -71,7 +71,6 @@ export const BookingForm: React.FC = () => {
   ) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
-    // Clear error on change
     if (errors[name as keyof FormErrors]) {
       setErrors((prev) => ({ ...prev, [name]: undefined }));
     }
@@ -83,7 +82,6 @@ export const BookingForm: React.FC = () => {
 
     setIsSubmitting(true);
 
-    // Simulate async booking API call
     setTimeout(() => {
       setIsSubmitting(false);
       setIsSubmitted(true);
@@ -91,36 +89,36 @@ export const BookingForm: React.FC = () => {
   };
 
   return (
-    <section id="booking" className="relative z-30 bg-slate-950 py-24 sm:py-32 px-4 sm:px-6 lg:px-8 border-t border-slate-800 text-slate-100">
+    <section id="booking" className="relative z-30 bg-slate-950 py-28 sm:py-36 px-4 sm:px-6 lg:px-8 text-slate-100 border-t border-white/[0.06]">
       <div className="max-w-4xl mx-auto">
         {/* Section Header */}
-        <div className="text-center max-w-2xl mx-auto mb-14">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-cyan-950/80 border border-cyan-500/30 text-cyan-400 text-xs font-bold tracking-widest uppercase mb-4">
-            <span className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse" />
-            Online Reservation
+        <div className="text-center max-w-2xl mx-auto mb-16">
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-slate-900/90 border border-cyan-500/30 text-cyan-400 text-[11px] font-semibold tracking-[0.25em] uppercase mb-4 shadow-lg shadow-cyan-500/10">
+            <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse" />
+            Private Concierge Reservation
           </div>
-          <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-white tracking-tight">
-            Schedule Your Smile Consultation
+          <h2 className="font-serif text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-light text-white tracking-tight leading-tight">
+            Reserve Your <span className="italic font-normal text-cyan-300">Consultation</span>
           </h2>
-          <p className="text-slate-400 mt-3 text-sm sm:text-base">
-            Reserve your private 3D digital imaging session with our master cosmetic dentists. Complimentary for all new smile makeover inquiries.
+          <p className="text-slate-400 mt-4 text-sm sm:text-base leading-relaxed">
+            Schedule a private 3D digital imaging session with our master cosmetic prosthodontists at <strong className="text-white">Smile Shine</strong>.
           </p>
         </div>
 
         {/* Form Container */}
-        <div className="relative rounded-3xl bg-slate-900/90 border border-slate-800 p-8 sm:p-12 shadow-2xl backdrop-blur-md">
+        <div className="relative rounded-3xl bg-slate-900/60 border border-white/[0.08] p-8 sm:p-12 shadow-2xl backdrop-blur-2xl">
           {isSubmitted ? (
             <div className="text-center py-10 space-y-6">
-              <div className="w-20 h-20 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 flex items-center justify-center mx-auto text-3xl shadow-xl shadow-emerald-500/10">
+              <div className="w-20 h-20 rounded-full bg-cyan-500/20 text-cyan-300 border border-cyan-500/40 flex items-center justify-center mx-auto text-3xl shadow-xl shadow-cyan-500/10">
                 ✓
               </div>
-              <h3 className="text-2xl sm:text-3xl font-extrabold text-white">
-                Appointment Requested Successfully!
+              <h3 className="font-serif text-2xl sm:text-4xl font-light text-white">
+                Appointment Requested <span className="italic font-normal text-cyan-300">Successfully</span>
               </h3>
-              <p className="text-slate-300 max-w-lg mx-auto text-sm sm:text-base leading-relaxed">
-                Thank you, <strong className="text-white">{formData.name}</strong>. Our clinical concierge team will reach out at <strong className="text-cyan-400">{formData.phone}</strong> to confirm your slot for <strong className="text-white">{formData.date}</strong> at <strong className="text-white">{formData.time}</strong>.
+              <p className="text-slate-300 max-w-lg mx-auto text-xs sm:text-sm leading-relaxed">
+                Thank you, <strong className="text-white font-semibold">{formData.name}</strong>. Our concierge team at <strong className="text-cyan-300">Smile Shine</strong> will reach out at <strong className="text-white">{formData.phone}</strong> to confirm your private suite appointment for <strong className="text-white">{formData.date}</strong> ({formData.time}).
               </p>
-              <div className="p-4 rounded-2xl bg-slate-950/70 border border-slate-800 text-xs text-slate-400 max-w-md mx-auto">
+              <div className="p-4 rounded-2xl bg-slate-950/80 border border-white/[0.08] text-xs text-slate-400 max-w-md mx-auto">
                 <span className="font-semibold text-slate-300">Selected Treatment:</span> {formData.treatment}
               </div>
               <button
@@ -136,7 +134,7 @@ export const BookingForm: React.FC = () => {
                     notes: '',
                   });
                 }}
-                className="px-6 py-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-white text-xs font-bold uppercase tracking-wider transition-all"
+                className="px-6 py-3 rounded-full bg-white/[0.05] hover:bg-white/[0.1] text-white text-xs font-semibold uppercase tracking-[0.2em] transition-all border border-white/10"
               >
                 Book Another Appointment
               </button>
@@ -146,7 +144,7 @@ export const BookingForm: React.FC = () => {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                 {/* Full Name */}
                 <div>
-                  <label htmlFor="name" className="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-2">
+                  <label htmlFor="name" className="block text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-300 mb-2">
                     Full Name <span className="text-cyan-400">*</span>
                   </label>
                   <input
@@ -156,8 +154,8 @@ export const BookingForm: React.FC = () => {
                     value={formData.name}
                     onChange={handleChange}
                     placeholder="e.g. Eleanor Vance"
-                    className={`w-full px-4 py-3.5 rounded-xl bg-slate-950 border text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-cyan-400 text-sm transition-all ${
-                      errors.name ? 'border-rose-500 focus:ring-rose-500' : 'border-slate-800'
+                    className={`w-full px-4 py-3.5 rounded-2xl bg-slate-950/90 border text-slate-100 placeholder-slate-600 focus:outline-none focus:ring-1 focus:ring-cyan-400 text-sm transition-all ${
+                      errors.name ? 'border-rose-500 focus:ring-rose-500' : 'border-white/[0.08]'
                     }`}
                   />
                   {errors.name && <p className="text-rose-400 text-xs mt-1.5">{errors.name}</p>}
@@ -165,7 +163,7 @@ export const BookingForm: React.FC = () => {
 
                 {/* Email Address */}
                 <div>
-                  <label htmlFor="email" className="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-2">
+                  <label htmlFor="email" className="block text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-300 mb-2">
                     Email Address <span className="text-cyan-400">*</span>
                   </label>
                   <input
@@ -175,8 +173,8 @@ export const BookingForm: React.FC = () => {
                     value={formData.email}
                     onChange={handleChange}
                     placeholder="e.g. eleanor@example.com"
-                    className={`w-full px-4 py-3.5 rounded-xl bg-slate-950 border text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-cyan-400 text-sm transition-all ${
-                      errors.email ? 'border-rose-500 focus:ring-rose-500' : 'border-slate-800'
+                    className={`w-full px-4 py-3.5 rounded-2xl bg-slate-950/90 border text-slate-100 placeholder-slate-600 focus:outline-none focus:ring-1 focus:ring-cyan-400 text-sm transition-all ${
+                      errors.email ? 'border-rose-500 focus:ring-rose-500' : 'border-white/[0.08]'
                     }`}
                   />
                   {errors.email && <p className="text-rose-400 text-xs mt-1.5">{errors.email}</p>}
@@ -186,7 +184,7 @@ export const BookingForm: React.FC = () => {
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
                 {/* Phone Number */}
                 <div>
-                  <label htmlFor="phone" className="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-2">
+                  <label htmlFor="phone" className="block text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-300 mb-2">
                     Phone Number <span className="text-cyan-400">*</span>
                   </label>
                   <input
@@ -195,9 +193,9 @@ export const BookingForm: React.FC = () => {
                     name="phone"
                     value={formData.phone}
                     onChange={handleChange}
-                    placeholder="(555) 000-0000"
-                    className={`w-full px-4 py-3.5 rounded-xl bg-slate-950 border text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-cyan-400 text-sm transition-all ${
-                      errors.phone ? 'border-rose-500 focus:ring-rose-500' : 'border-slate-800'
+                    placeholder="+91 00000 00000"
+                    className={`w-full px-4 py-3.5 rounded-2xl bg-slate-950/90 border text-slate-100 placeholder-slate-600 focus:outline-none focus:ring-1 focus:ring-cyan-400 text-sm transition-all ${
+                      errors.phone ? 'border-rose-500 focus:ring-rose-500' : 'border-white/[0.08]'
                     }`}
                   />
                   {errors.phone && <p className="text-rose-400 text-xs mt-1.5">{errors.phone}</p>}
@@ -205,7 +203,7 @@ export const BookingForm: React.FC = () => {
 
                 {/* Preferred Date */}
                 <div>
-                  <label htmlFor="date" className="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-2">
+                  <label htmlFor="date" className="block text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-300 mb-2">
                     Preferred Date <span className="text-cyan-400">*</span>
                   </label>
                   <input
@@ -215,8 +213,8 @@ export const BookingForm: React.FC = () => {
                     value={formData.date}
                     onChange={handleChange}
                     min={new Date().toISOString().split('T')[0]}
-                    className={`w-full px-4 py-3.5 rounded-xl bg-slate-950 border text-slate-100 focus:outline-none focus:ring-2 focus:ring-cyan-400 text-sm transition-all ${
-                      errors.date ? 'border-rose-500 focus:ring-rose-500' : 'border-slate-800'
+                    className={`w-full px-4 py-3.5 rounded-2xl bg-slate-950/90 border text-slate-100 focus:outline-none focus:ring-1 focus:ring-cyan-400 text-sm transition-all ${
+                      errors.date ? 'border-rose-500 focus:ring-rose-500' : 'border-white/[0.08]'
                     }`}
                   />
                   {errors.date && <p className="text-rose-400 text-xs mt-1.5">{errors.date}</p>}
@@ -224,7 +222,7 @@ export const BookingForm: React.FC = () => {
 
                 {/* Preferred Time */}
                 <div>
-                  <label htmlFor="time" className="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-2">
+                  <label htmlFor="time" className="block text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-300 mb-2">
                     Preferred Time <span className="text-cyan-400">*</span>
                   </label>
                   <select
@@ -232,15 +230,14 @@ export const BookingForm: React.FC = () => {
                     name="time"
                     value={formData.time}
                     onChange={handleChange}
-                    className={`w-full px-4 py-3.5 rounded-xl bg-slate-950 border text-slate-100 focus:outline-none focus:ring-2 focus:ring-cyan-400 text-sm transition-all ${
-                      errors.time ? 'border-rose-500 focus:ring-rose-500' : 'border-slate-800'
+                    className={`w-full px-4 py-3.5 rounded-2xl bg-slate-950/90 border text-slate-100 focus:outline-none focus:ring-1 focus:ring-cyan-400 text-sm transition-all ${
+                      errors.time ? 'border-rose-500 focus:ring-rose-500' : 'border-white/[0.08]'
                     }`}
                   >
-                    <option value="">Select Time Slot</option>
-                    <option value="Morning (8:00 AM – 11:00 AM)">Morning (8:00 AM – 11:00 AM)</option>
-                    <option value="Mid-Day (11:00 AM – 2:00 PM)">Mid-Day (11:00 AM – 2:00 PM)</option>
-                    <option value="Afternoon (2:00 PM – 5:00 PM)">Afternoon (2:00 PM – 5:00 PM)</option>
-                    <option value="Evening (5:00 PM – 7:00 PM)">Evening (5:00 PM – 7:00 PM)</option>
+                    <option value="">Select Time Window</option>
+                    <option value="Morning (9:00 AM – 12:00 PM)">Morning (9:00 AM – 12:00 PM)</option>
+                    <option value="Afternoon (12:00 PM – 3:00 PM)">Afternoon (12:00 PM – 3:00 PM)</option>
+                    <option value="Late Afternoon (3:00 PM – 6:00 PM)">Late Afternoon (3:00 PM – 6:00 PM)</option>
                   </select>
                   {errors.time && <p className="text-rose-400 text-xs mt-1.5">{errors.time}</p>}
                 </div>
@@ -248,29 +245,29 @@ export const BookingForm: React.FC = () => {
 
               {/* Treatment Focus */}
               <div>
-                <label htmlFor="treatment" className="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-2">
-                  Treatment / Inquiry Interest
+                <label htmlFor="treatment" className="block text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-300 mb-2">
+                  Treatment of Interest
                 </label>
                 <select
                   id="treatment"
                   name="treatment"
                   value={formData.treatment}
                   onChange={handleChange}
-                  className="w-full px-4 py-3.5 rounded-xl bg-slate-950 border border-slate-800 text-slate-100 focus:outline-none focus:ring-2 focus:ring-cyan-400 text-sm"
+                  className="w-full px-4 py-3.5 rounded-2xl bg-slate-950/90 border border-white/[0.08] text-slate-100 focus:outline-none focus:ring-1 focus:ring-cyan-400 text-sm"
                 >
-                  <option value="Digital Smile Design & 3D Consultation">Digital Smile Design & 3D Consultation</option>
-                  <option value="Custom Porcelain Veneers">Custom Porcelain Veneers</option>
-                  <option value="Laser Teeth Whitening">Laser Teeth Whitening</option>
-                  <option value="Guided Dental Implants">Guided Dental Implants</option>
-                  <option value="Clear Aligners & Orthodontics">Clear Aligners & Orthodontics</option>
-                  <option value="Routine Preventive & Hygiene Care">Routine Preventive & Hygiene Care</option>
+                  <option value="Digital Smile Design & 3D Consultation">Digital Smile Design & 3D Biometric Consultation</option>
+                  <option value="Handcrafted Ceramic Veneers">Handcrafted Ceramic Veneers</option>
+                  <option value="Photonic Laser Enamel Whitening">Photonic Laser Enamel Whitening</option>
+                  <option value="Guided Titanium & Zirconia Implants">Guided Titanium & Zirconia Implants</option>
+                  <option value="Diamond+ Clear Aligners & Orthodontics">Diamond+ Clear Aligners & Orthodontics</option>
+                  <option value="Painless Sedation & Hygiene Care">Painless Sedation & Hygiene Care</option>
                 </select>
               </div>
 
-              {/* Special Requests / Notes */}
+              {/* Notes */}
               <div>
-                <label htmlFor="notes" className="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-2">
-                  Personal Preferences / Notes (Optional)
+                <label htmlFor="notes" className="block text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-300 mb-2">
+                  Personal Preferences / Clinical Notes (Optional)
                 </label>
                 <textarea
                   id="notes"
@@ -278,8 +275,8 @@ export const BookingForm: React.FC = () => {
                   rows={3}
                   value={formData.notes}
                   onChange={handleChange}
-                  placeholder="Tell us about your dental goals, previous treatments, or any anxiety concerns..."
-                  className="w-full px-4 py-3 rounded-xl bg-slate-950 border border-slate-800 text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-cyan-400 text-sm resize-none"
+                  placeholder="Tell us about your aesthetic goals, prior treatments, or anxiety considerations..."
+                  className="w-full px-4 py-3 rounded-2xl bg-slate-950/90 border border-white/[0.08] text-slate-100 placeholder-slate-600 focus:outline-none focus:ring-1 focus:ring-cyan-400 text-sm resize-none"
                 />
               </div>
 
@@ -288,26 +285,26 @@ export const BookingForm: React.FC = () => {
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="w-full py-4 rounded-xl bg-gradient-to-r from-sky-600 via-cyan-500 to-teal-400 hover:from-sky-500 hover:to-teal-300 text-white font-extrabold text-sm sm:text-base uppercase tracking-wider shadow-lg shadow-cyan-500/25 hover:shadow-cyan-500/40 transform hover:-translate-y-0.5 transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="w-full py-4 rounded-full bg-gradient-to-r from-cyan-500 via-sky-500 to-teal-400 hover:from-cyan-400 hover:to-teal-300 text-slate-950 font-bold text-xs uppercase tracking-[0.22em] shadow-lg shadow-cyan-500/25 hover:shadow-cyan-500/40 transform hover:-translate-y-0.5 transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {isSubmitting ? (
                     <>
-                      <div className="w-5 h-5 rounded-full border-2 border-white/30 border-t-white animate-spin" />
-                      <span>Securing Your Slot...</span>
+                      <div className="w-4 h-4 rounded-full border-2 border-slate-950/30 border-t-slate-950 animate-spin" />
+                      <span>Confirming Request...</span>
                     </>
                   ) : (
                     <>
-                      <span>Confirm Appointment Request</span>
-                      <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                      <span>Confirm Consultation Request</span>
+                      <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.4}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
                       </svg>
                     </>
                   )}
                 </button>
               </div>
 
-              <p className="text-center text-[11px] text-slate-500">
-                🔒 HIPAA Compliant & Confidential. Your medical data is strictly private.
+              <p className="text-center text-[10px] text-slate-500 font-mono tracking-wider uppercase">
+                🔒 Strict Medical Privacy & HIPAA Compliant Data Protocol
               </p>
             </form>
           )}

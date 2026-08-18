@@ -1,5 +1,4 @@
 import React from 'react';
-import Link from 'next/link';
 
 interface DoctorTeamMember {
   name: string;
@@ -15,117 +14,117 @@ const teamMembers: DoctorTeamMember[] = [
     name: 'Dr. Elena Vance, DDS, FAGD',
     role: 'Founder & Lead Cosmetic Prosthodontist',
     credentials: 'Harvard School of Dental Medicine | AACD Accredited Fellow',
-    specialty: 'Digital Smile Design, Porcelain Veneers & Full Mouth Aesthetics',
-    bio: 'With over 18 years refining smiles across Beverly Hills and New York, Dr. Vance combines bio-mechanical engineering precision with aesthetic facial proportion mapping.',
+    specialty: 'Digital Smile Design, Handcrafted Veneers & Full Mouth Aesthetics',
+    bio: 'Renowned for orchestrating transformative smiles with biometric precision and nuanced ceramic stratification that celebrates unique facial beauty.',
     initials: 'EV',
   },
   {
     name: 'Dr. Marcus Hayes, DMD, MS',
     role: 'Surgical Director & Implantologist',
     credentials: 'Columbia University | Diplomate, American Board of Oral Implantology',
-    specialty: '3D CBCT Guided Implants, Bone Regeneration & All-on-X Restorations',
-    bio: 'Pioneer in minimally invasive computer-navigated dental implants with a focus on immediate same-day restorative loading and zero-pain surgical recovery.',
+    specialty: '3D CBCT Navigated Implants, Bone Regeneration & Full-Arch Restorations',
+    bio: 'Pioneered computer-assisted micro-invasive implantology delivering instant functional loading with serene recovery experiences.',
     initials: 'MH',
   },
   {
     name: 'Dr. Sophia Lin, DDS, MS',
-    role: 'Orthodontics & Facial Aesthetics',
+    role: 'Orthodontics & Facial Harmony Specialist',
     credentials: 'UPenn Dental Medicine | Diamond+ Top 1% Invisalign Provider',
-    specialty: 'Accelerated Clear Aligner Therapy & Airway Orthodontics',
-    bio: 'Specializes in harmonic bite alignment and subtle airway expansion, harmonizing dental arches with natural facial symmetry.',
+    specialty: 'Accelerated Clear Aligner Protocols & Airway Aesthetics',
+    bio: 'Dedicated to harmonic dental arch development, non-extraction alignment, and holistic facial proportion enhancement.',
     initials: 'SL',
   },
 ];
 
 export const AboutSection: React.FC = () => {
   return (
-    <section id="about" className="relative z-30 bg-slate-950 py-24 sm:py-32 px-4 sm:px-6 lg:px-8 border-t border-slate-800 text-slate-100">
+    <section id="about" className="relative z-30 bg-slate-950 py-28 sm:py-36 px-4 sm:px-6 lg:px-8 text-slate-100 border-t border-white/[0.06]">
       <div className="max-w-7xl mx-auto">
         {/* Top Story & Mission Statement */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center mb-24">
-          <div className="lg:col-span-6 space-y-6">
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-cyan-950/80 border border-cyan-500/30 text-cyan-400 text-xs font-bold tracking-widest uppercase">
-              <span>Our Philosophy & Craft</span>
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center mb-28">
+          <div className="lg:col-span-6 space-y-7">
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-slate-900/90 border border-cyan-500/30 text-cyan-400 text-[11px] font-semibold tracking-[0.25em] uppercase shadow-lg shadow-cyan-500/10">
+              <span>Haute Dentistry Philosophy</span>
             </div>
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-black tracking-tight text-white leading-tight">
-              Where High-Tech Dentistry Meets Bespoke Artistry.
+            <h2 className="font-serif text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-light text-white tracking-tight leading-tight">
+              Where Engineering Meets <span className="italic text-cyan-300 font-normal">Artisanal Artistry</span>.
             </h2>
-            <p className="text-slate-300 text-base sm:text-lg leading-relaxed">
-              At <strong className="text-white">WE DESIGN SMILES</strong>, we believe every smile is as unique as a fingerprint. Founded with a vision to eliminate dental anxiety, our clinic combines hospital-grade sterile environments with the soothing luxury of a boutique wellness spa.
+            <p className="text-slate-300 text-sm sm:text-base md:text-lg leading-relaxed">
+              <strong className="text-white font-bold">Smile Shine</strong> was established with a singular vision: to dismantle dental apprehension through serene luxury, uncompromising clinical mastery, and next-generation optical technology.
             </p>
-            <p className="text-slate-400 text-sm sm:text-base leading-relaxed">
-              We leverage completely paperless, digital workflows—from 3D intraoral HD scans to robotic-assisted implantology and in-house ceramic master labs—giving our patients predictable, natural, and lifelong aesthetic results.
+            <p className="text-slate-400 text-xs sm:text-sm md:text-base leading-relaxed">
+              From instant micron-precision 3D intraoral scans to our on-site ceramic atelier, we craft bespoke smile transformations that feel natural, radiant, and enduringly confident.
             </p>
 
             {/* Accreditations & Badges */}
-            <div className="pt-4 flex flex-wrap items-center gap-3">
-              {['AACD Accredited', 'ADA Member', 'ICOI Fellow', 'Digital Smile Design Certified'].map((badge) => (
+            <div className="pt-3 flex flex-wrap items-center gap-3">
+              {['AACD Accredited Fellow', 'ADA Member', 'ICOI Diplomate', 'Digital Smile Design Certified'].map((badge) => (
                 <span
                   key={badge}
-                  className="px-3.5 py-1.5 rounded-lg bg-slate-900 border border-slate-800 text-xs font-semibold text-cyan-300 flex items-center gap-1.5 shadow-sm"
+                  className="px-3.5 py-1.5 rounded-full bg-white/[0.03] border border-white/[0.08] text-[11px] font-medium tracking-wide text-slate-300 flex items-center gap-2"
                 >
-                  <svg className="w-3.5 h-3.5 text-cyan-400" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                  </svg>
+                  <span className="w-1.5 h-1.5 rounded-full bg-cyan-400" />
                   {badge}
                 </span>
               ))}
             </div>
           </div>
 
-          {/* Clinic Stats & Pillars Box */}
+          {/* Pillars Grid */}
           <div className="lg:col-span-6 grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div className="p-6 rounded-3xl bg-slate-900/90 border border-slate-800 flex flex-col justify-between">
-              <div className="w-12 h-12 rounded-2xl bg-cyan-950/60 border border-cyan-500/30 flex items-center justify-center text-cyan-400 font-bold text-lg mb-4">
+            <div className="p-7 rounded-3xl bg-slate-900/60 border border-white/[0.08] flex flex-col justify-between backdrop-blur-xl">
+              <div className="w-11 h-11 rounded-2xl bg-cyan-950/80 border border-cyan-500/30 flex items-center justify-center text-cyan-400 font-serif font-bold text-lg mb-5">
                 01
               </div>
-              <h3 className="text-lg font-bold text-white mb-1">Zero Pain Promise</h3>
-              <p className="text-slate-400 text-xs sm:text-sm">
-                Computerized anesthesia delivery and soothing acoustic suites ensure maximum serenity.
+              <h3 className="font-serif text-lg font-semibold text-white mb-1.5">Gentle Sanctuary Protocol</h3>
+              <p className="text-slate-400 text-xs leading-relaxed">
+                Computerized needleless anesthesia delivery and soothing acoustic suites ensure zero-pain relaxation.
               </p>
             </div>
 
-            <div className="p-6 rounded-3xl bg-slate-900/90 border border-slate-800 flex flex-col justify-between">
-              <div className="w-12 h-12 rounded-2xl bg-sky-950/60 border border-sky-500/30 flex items-center justify-center text-sky-400 font-bold text-lg mb-4">
+            <div className="p-7 rounded-3xl bg-slate-900/60 border border-white/[0.08] flex flex-col justify-between backdrop-blur-xl">
+              <div className="w-11 h-11 rounded-2xl bg-sky-950/80 border border-sky-500/30 flex items-center justify-center text-sky-400 font-serif font-bold text-lg mb-5">
                 02
               </div>
-              <h3 className="text-lg font-bold text-white mb-1">In-House Master Lab</h3>
-              <p className="text-slate-400 text-xs sm:text-sm">
-                Direct chairside shade matching and same-day ceramic adjustments by master ceramists.
+              <h3 className="font-serif text-lg font-semibold text-white mb-1.5">On-Site Master Ceramic Lab</h3>
+              <p className="text-slate-400 text-xs leading-relaxed">
+                Custom chairside shade calibration and individual porcelain stratification by master ceramists.
               </p>
             </div>
 
-            <div className="p-6 rounded-3xl bg-slate-900/90 border border-slate-800 flex flex-col justify-between">
-              <div className="w-12 h-12 rounded-2xl bg-cyan-950/60 border border-cyan-500/30 flex items-center justify-center text-cyan-400 font-bold text-lg mb-4">
+            <div className="p-7 rounded-3xl bg-slate-900/60 border border-white/[0.08] flex flex-col justify-between backdrop-blur-xl">
+              <div className="w-11 h-11 rounded-2xl bg-cyan-950/80 border border-cyan-500/30 flex items-center justify-center text-cyan-400 font-serif font-bold text-lg mb-5">
                 03
               </div>
-              <h3 className="text-lg font-bold text-white mb-1">3D Biometric Scans</h3>
-              <p className="text-slate-400 text-xs sm:text-sm">
-                No messy impression trays. Instant micron-accurate optical modeling in seconds.
+              <h3 className="font-serif text-lg font-semibold text-white mb-1.5">3D Biometric Optics</h3>
+              <p className="text-slate-400 text-xs leading-relaxed">
+                No uncomfortable trays. Sub-millimeter optical digital scanning in under 90 seconds.
               </p>
             </div>
 
-            <div className="p-6 rounded-3xl bg-slate-900/90 border border-slate-800 flex flex-col justify-between">
-              <div className="w-12 h-12 rounded-2xl bg-sky-950/60 border border-sky-500/30 flex items-center justify-center text-sky-400 font-bold text-lg mb-4">
+            <div className="p-7 rounded-3xl bg-slate-900/60 border border-white/[0.08] flex flex-col justify-between backdrop-blur-xl">
+              <div className="w-11 h-11 rounded-2xl bg-sky-950/80 border border-sky-500/30 flex items-center justify-center text-sky-400 font-serif font-bold text-lg mb-5">
                 04
               </div>
-              <h3 className="text-lg font-bold text-white mb-1">Comprehensive Warranty</h3>
-              <p className="text-slate-400 text-xs sm:text-sm">
-                Long-term clinical guarantee on porcelain veneers, crowns, and dental implants.
+              <h3 className="font-serif text-lg font-semibold text-white mb-1.5">Comprehensive Warranty</h3>
+              <p className="text-slate-400 text-xs leading-relaxed">
+                Enduring clinical warranty on handcrafted veneers, crowns, and guided osseointegrated implants.
               </p>
             </div>
           </div>
         </div>
 
         {/* Doctor Team Introduction */}
-        <div className="pt-12 border-t border-slate-800">
+        <div className="pt-16 border-t border-white/[0.06]">
           <div className="text-center max-w-2xl mx-auto mb-16">
-            <span className="text-xs font-bold uppercase tracking-widest text-cyan-400">Clinical Leadership</span>
-            <h3 className="text-2xl sm:text-4xl font-extrabold text-white mt-2">
-              Meet Your World-Class Dental Masters
+            <span className="text-[11px] font-semibold uppercase tracking-[0.25em] text-cyan-400 font-display">
+              Clinical Leadership
+            </span>
+            <h3 className="font-serif text-2xl sm:text-4xl md:text-5xl font-light text-white mt-2">
+              Meet the Masters Behind <span className="italic font-normal text-cyan-300">Smile Shine</span>
             </h3>
-            <p className="text-slate-400 text-sm sm:text-base mt-2">
-              Renowned specialists dedicated to delivering exceptional clinical precision and natural aesthetic elegance.
+            <p className="text-slate-400 text-xs sm:text-sm mt-3">
+              Distinguished clinicians recognized internationally for surgical excellence and refined aesthetic finesse.
             </p>
           </div>
 
@@ -133,28 +132,30 @@ export const AboutSection: React.FC = () => {
             {teamMembers.map((member) => (
               <div
                 key={member.name}
-                className="rounded-3xl bg-slate-900/80 border border-slate-800 p-7 flex flex-col justify-between hover:border-cyan-500/40 transition-all hover:shadow-xl hover:shadow-cyan-950/30 group"
+                className="rounded-3xl bg-slate-900/60 border border-white/[0.08] p-8 flex flex-col justify-between hover:border-cyan-500/40 transition-all duration-500 hover:shadow-2xl hover:shadow-cyan-500/10 group backdrop-blur-xl"
               >
                 <div>
-                  {/* Doctor Profile Placeholder Avatar */}
-                  <div className="relative w-full aspect-[4/3] rounded-2xl bg-gradient-to-tr from-slate-800 via-slate-800/60 to-cyan-950/50 border border-slate-700/50 flex flex-col items-center justify-center mb-6 overflow-hidden group-hover:border-cyan-500/40 transition-all">
-                    <div className="w-20 h-20 rounded-full bg-gradient-to-br from-cyan-500 to-sky-600 text-white font-extrabold text-2xl flex items-center justify-center shadow-xl group-hover:scale-105 transition-transform">
-                      {member.initials}
+                  {/* Doctor Profile Visual Box */}
+                  <div className="relative w-full aspect-[4/3] rounded-2xl bg-gradient-to-tr from-slate-950 via-slate-900 to-cyan-950/40 border border-white/[0.08] flex flex-col items-center justify-center mb-6 overflow-hidden group-hover:border-cyan-500/30 transition-all">
+                    <div className="w-18 h-18 rounded-full bg-gradient-to-br from-cyan-500 via-sky-500 to-teal-400 p-[1.5px] shadow-xl group-hover:scale-105 transition-transform duration-300">
+                      <div className="w-full h-full rounded-full bg-slate-950 flex items-center justify-center text-white font-serif font-bold text-xl">
+                        {member.initials}
+                      </div>
                     </div>
-                    <span className="text-[11px] font-semibold text-slate-400 uppercase tracking-widest mt-3">
+                    <span className="text-[10px] font-medium tracking-[0.2em] text-slate-400 uppercase mt-3">
                       Board Certified Specialist
                     </span>
                   </div>
 
-                  <h4 className="text-lg sm:text-xl font-bold text-white group-hover:text-cyan-300 transition-colors">
+                  <h4 className="font-serif text-xl font-semibold text-white group-hover:text-cyan-200 transition-colors">
                     {member.name}
                   </h4>
-                  <div className="text-xs font-semibold text-cyan-400 mt-0.5">{member.role}</div>
-                  <div className="text-[11px] text-slate-400 font-mono mt-1 mb-3">{member.credentials}</div>
-                  <p className="text-slate-300 text-xs sm:text-sm leading-relaxed mb-4">{member.bio}</p>
+                  <div className="text-[11px] font-semibold uppercase tracking-wider text-cyan-400 mt-1">{member.role}</div>
+                  <div className="text-[10px] text-slate-400 font-mono mt-1 mb-4">{member.credentials}</div>
+                  <p className="text-slate-300 text-xs leading-relaxed mb-4">{member.bio}</p>
                 </div>
 
-                <div className="pt-4 border-t border-slate-800/80 flex items-center justify-between text-xs text-slate-400">
+                <div className="pt-4 border-t border-white/[0.06] text-[11px] text-slate-400">
                   <span className="font-medium text-slate-300">{member.specialty}</span>
                 </div>
               </div>

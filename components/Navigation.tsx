@@ -11,21 +11,18 @@ export interface NavItem {
 }
 
 export interface NavigationProps {
-  /**
-   * Optional custom list of section IDs or nav items to observe and navigate to.
-   * e.g. ['home', 'videos', 'gallery', 'about', 'services', 'booking']
-   * or array of NavItem objects.
-   */
   sections?: (string | NavItem)[];
 }
 
 const DEFAULT_NAV_ITEMS: NavItem[] = [
   { id: 'home', label: 'Home', href: '#home' },
-  { id: 'videos', label: 'Videos', href: '#videos' },
-  { id: 'gallery', label: 'Gallery', href: '#gallery' },
+  { id: 'videos', label: 'Virtual Tour', href: '#videos' },
+  { id: 'gallery', label: 'Transformations', href: '#gallery' },
+  { id: 'suites', label: 'Suites & Flow', href: '#suites' },
+  { id: 'services', label: 'Treatments', href: '#services' },
   { id: 'about', label: 'About Us', href: '#about' },
-  { id: 'services', label: 'Services', href: '#services' },
-  { id: 'booking', label: 'Book Appointment', href: '#booking', isCta: true },
+  { id: 'location', label: 'Location', href: '#location' },
+  { id: 'booking', label: 'Reserve Appointment', href: '#booking', isCta: true },
 ];
 
 export const Navigation: React.FC<NavigationProps> = ({ sections }) => {
@@ -33,7 +30,6 @@ export const Navigation: React.FC<NavigationProps> = ({ sections }) => {
   const [isScrolled, setIsScrolled] = useState<boolean>(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState<boolean>(false);
 
-  // Normalize sections prop into standardized NavItem array
   const navItems: NavItem[] = React.useMemo(() => {
     if (!sections || sections.length === 0) {
       return DEFAULT_NAV_ITEMS;
@@ -44,15 +40,15 @@ export const Navigation: React.FC<NavigationProps> = ({ sections }) => {
         const id = sec.replace(/^#/, '');
         const labelMap: Record<string, string> = {
           home: 'Home',
-          videos: 'Videos',
-          walkthrough: 'Videos',
-          gallery: 'Gallery',
-          transformations: 'Gallery',
+          videos: 'Virtual Tour',
+          walkthrough: 'Virtual Tour',
+          gallery: 'Transformations',
+          suites: 'Suites & Flow',
+          continuity: 'Suites & Flow',
           about: 'About Us',
-          services: 'Services',
+          services: 'Treatments',
           location: 'Location',
-          booking: 'Book Appointment',
-          appointment: 'Book Appointment',
+          booking: 'Reserve Appointment',
         };
         const label =
           labelMap[id.toLowerCase()] ||
@@ -69,13 +65,12 @@ export const Navigation: React.FC<NavigationProps> = ({ sections }) => {
     });
   }, [sections]);
 
-  // Track scroll position to update active section & sticky shadow styling
   useEffect(() => {
     const handleScroll = () => {
       const scrollPosition = window.scrollY;
       setIsScrolled(scrollPosition > 30);
 
-      const navHeight = 90; // offset for fixed header
+      const navHeight = 90;
       const sectionElements = navItems
         .map((item) => ({
           id: item.id,
@@ -85,7 +80,6 @@ export const Navigation: React.FC<NavigationProps> = ({ sections }) => {
 
       if (sectionElements.length === 0) return;
 
-      // Check which section is currently in view
       for (let i = sectionElements.length - 1; i >= 0; i--) {
         const { id, element } = sectionElements[i];
         const offsetTop = element.offsetTop - navHeight - 50;
@@ -95,19 +89,17 @@ export const Navigation: React.FC<NavigationProps> = ({ sections }) => {
         }
       }
 
-      // If at very top, default to first item
       if (scrollPosition < 100 && sectionElements.length > 0) {
         setActiveSection(sectionElements[0].id);
       }
     };
 
     window.addEventListener('scroll', handleScroll, { passive: true });
-    handleScroll(); // Initial evaluation on mount
+    handleScroll();
 
     return () => window.removeEventListener('scroll', handleScroll);
   }, [navItems]);
 
-  // Smooth scroll handler
   const handleNavClick = (
     e: React.MouseEvent<HTMLAnchorElement>,
     href: string,
@@ -127,7 +119,6 @@ export const Navigation: React.FC<NavigationProps> = ({ sections }) => {
         });
         setActiveSection(id);
       } else {
-        // If element doesn't exist, scroll to top if home
         if (id === 'home') {
           window.scrollTo({ top: 0, behavior: 'smooth' });
           setActiveSection('home');
@@ -144,50 +135,52 @@ export const Navigation: React.FC<NavigationProps> = ({ sections }) => {
     <nav
       role="navigation"
       aria-label="Main Navigation"
-      className={`sticky top-0 inset-x-0 z-50 transition-all duration-300 ${
+      className={`fixed top-0 inset-x-0 z-50 transition-all duration-500 ${
         isScrolled
-          ? 'bg-slate-950/85 backdrop-blur-md shadow-lg shadow-black/20 border-b border-slate-800/80 py-3.5'
-          : 'bg-slate-950/60 backdrop-blur-sm border-b border-transparent py-5'
+          ? 'bg-slate-950/80 backdrop-blur-2xl shadow-2xl shadow-black/40 border-b border-white/[0.08] py-3.5'
+          : 'bg-gradient-to-b from-slate-950/90 via-slate-950/40 to-transparent py-5'
       }`}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between">
-        {/* (1) Clinic Logo / Branding in Teal (#06b6d4) */}
+        {/* Brand: Smile Shine */}
         <Link
           href="#home"
           onClick={(e) => handleNavClick(e, '#home', 'home')}
-          className="flex items-center gap-3 group focus:outline-none focus:ring-2 focus:ring-[#06b6d4] rounded-xl p-1"
-          aria-label="WE DESIGN SMILES - Return to top"
+          className="flex items-center gap-3.5 group focus:outline-none focus:ring-1 focus:ring-cyan-400 rounded-xl"
+          aria-label="Smile Shine - Return to top"
         >
-          {/* Teal Icon Container */}
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-[#06b6d4] to-cyan-400 flex items-center justify-center shadow-lg shadow-[#06b6d4]/30 group-hover:scale-105 transition-transform">
-            <svg
-              className="w-6 h-6 text-white"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2.2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2z" />
-              <path d="M8 14s1.5 2 4 2 4-2 4-2" />
-              <line x1="9" y1="9" x2="9.01" y2="9" />
-              <line x1="15" y1="9" x2="15.01" y2="9" />
-            </svg>
+          {/* Luminous Emblem */}
+          <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-cyan-500 via-sky-400 to-teal-300 p-[1px] shadow-lg shadow-cyan-500/20 group-hover:shadow-cyan-500/40 group-hover:scale-105 transition-all duration-300">
+            <div className="w-full h-full rounded-[15px] bg-slate-950 flex items-center justify-center">
+              <svg
+                className="w-5 h-5 text-cyan-400 group-hover:text-cyan-300 transition-colors"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.8"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2z" />
+                <path d="M8 13.5s1.5 2.5 4 2.5 4-2.5 4-2.5" />
+                <circle cx="9" cy="9" r="1.2" fill="currentColor" />
+                <circle cx="15" cy="9" r="1.2" fill="currentColor" />
+              </svg>
+            </div>
           </div>
 
-          {/* Branding Typography with Teal Accent */}
+          {/* Typography: Smile Shine */}
           <div className="flex flex-col">
-            <span className="text-base sm:text-lg font-black tracking-wider text-white uppercase group-hover:text-[#06b6d4] transition-colors leading-tight">
-              WE DESIGN <span className="text-[#06b6d4]">SMILES</span>
+            <span className="text-base sm:text-lg font-extrabold tracking-[0.12em] text-white uppercase group-hover:text-cyan-300 transition-colors leading-none font-display">
+              Smile <span className="font-light tracking-[0.18em] text-cyan-400">Shine</span>
             </span>
-            <span className="text-[10px] sm:text-xs font-semibold tracking-widest text-[#06b6d4] uppercase">
-              Dental Clinic & Aesthetics
+            <span className="text-[9px] sm:text-[10px] font-medium tracking-[0.28em] text-slate-400 uppercase mt-1">
+              Haute Dental Studio
             </span>
           </div>
         </Link>
 
-        {/* (2) & (3) Desktop Navigation: Horizontal Menu with Active Highlight */}
+        {/* Desktop Menu */}
         <div className="hidden lg:flex items-center gap-1 xl:gap-2">
           {regularLinks.map((link) => {
             const isActive = activeSection === link.id;
@@ -196,59 +189,61 @@ export const Navigation: React.FC<NavigationProps> = ({ sections }) => {
                 key={link.id}
                 href={link.href}
                 onClick={(e) => handleNavClick(e, link.href, link.id)}
-                className={`relative px-3.5 py-2 rounded-lg text-sm font-semibold transition-all duration-200 ${
+                className={`relative px-3.5 py-1.5 text-xs font-semibold uppercase tracking-[0.15em] transition-all duration-300 rounded-full ${
                   isActive
-                    ? 'text-[#06b6d4] bg-cyan-950/40'
-                    : 'text-slate-300 hover:text-white hover:bg-slate-900/50'
+                    ? 'text-cyan-300 bg-white/[0.06] border border-cyan-500/30 shadow-sm shadow-cyan-500/10'
+                    : 'text-slate-300 hover:text-white hover:bg-white/[0.03]'
                 }`}
                 aria-current={isActive ? 'page' : undefined}
               >
                 {link.label}
-                {/* Active Indicator Underline */}
-                {isActive && (
-                  <span className="absolute bottom-0 inset-x-3 h-0.5 bg-[#06b6d4] rounded-full shadow-sm shadow-[#06b6d4]" />
-                )}
               </Link>
             );
           })}
         </div>
 
-        {/* (7) Desktop CTA Button: "Book Appointment" in Teal with Hover Effects */}
+        {/* CTA Button in Teal */}
         {ctaLink && (
           <div className="hidden sm:flex items-center">
             <Link
               href={ctaLink.href}
               onClick={(e) => handleNavClick(e, ctaLink.href, ctaLink.id)}
-              className="px-5 py-2.5 rounded-full bg-[#06b6d4] hover:bg-cyan-400 text-slate-950 hover:text-black font-extrabold text-xs sm:text-sm tracking-wide shadow-lg shadow-[#06b6d4]/25 hover:shadow-[#06b6d4]/40 hover:-translate-y-0.5 active:translate-y-0 transition-all duration-200 flex items-center gap-2"
+              className="relative group overflow-hidden px-5 py-2.5 rounded-full bg-gradient-to-r from-cyan-500 via-sky-500 to-teal-400 text-slate-950 font-bold text-xs uppercase tracking-[0.18em] shadow-lg shadow-cyan-500/20 hover:shadow-cyan-500/40 hover:-translate-y-0.5 active:translate-y-0 transition-all duration-300 flex items-center gap-2"
             >
-              <span>{ctaLink.label}</span>
-              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M14 5l7 7m0 0l-7 7m7-7H3" />
+              <span className="relative z-10">{ctaLink.label}</span>
+              <svg
+                className="w-3.5 h-3.5 relative z-10 transform group-hover:translate-x-0.5 transition-transform"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                strokeWidth={2.4}
+              >
+                <path strokeLinecap="round" strokeLinejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
               </svg>
             </Link>
           </div>
         )}
 
-        {/* (4) Mobile: Hamburger Menu Icon */}
+        {/* Mobile Hamburger */}
         <button
           onClick={() => setMobileMenuOpen((prev) => !prev)}
-          className="lg:hidden p-2.5 rounded-xl text-slate-300 hover:text-white hover:bg-slate-800/60 focus:outline-none focus:ring-2 focus:ring-[#06b6d4] transition-colors"
+          className="lg:hidden p-2.5 rounded-xl text-slate-300 hover:text-white hover:bg-slate-800/60 focus:outline-none focus:ring-1 focus:ring-cyan-400 transition-colors"
           aria-label={mobileMenuOpen ? 'Close menu' : 'Open menu'}
           aria-expanded={mobileMenuOpen}
         >
           <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             {mobileMenuOpen ? (
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.2} d="M6 18L18 6M6 6l12 12" />
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M6 18L18 6M6 6l12 12" />
             ) : (
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.2} d="M4 6h16M4 12h16M4 18h16" />
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M4 6h16M4 12h16M4 18h16" />
             )}
           </svg>
         </button>
       </div>
 
-      {/* (4) Mobile Vertical Menu Drawer */}
+      {/* Mobile Menu Drawer */}
       {mobileMenuOpen && (
-        <div className="lg:hidden bg-slate-950/95 backdrop-blur-xl border-b border-slate-800 px-6 py-6 transition-all duration-300 animate-fadeIn">
+        <div className="lg:hidden bg-slate-950/95 backdrop-blur-2xl border-b border-white/[0.08] px-6 py-6 transition-all duration-300">
           <div className="flex flex-col gap-2">
             {regularLinks.map((link) => {
               const isActive = activeSection === link.id;
@@ -257,24 +252,24 @@ export const Navigation: React.FC<NavigationProps> = ({ sections }) => {
                   key={link.id}
                   href={link.href}
                   onClick={(e) => handleNavClick(e, link.href, link.id)}
-                  className={`py-3 px-4 rounded-xl text-base font-semibold flex items-center justify-between transition-colors ${
+                  className={`py-3 px-4 rounded-xl text-xs font-semibold uppercase tracking-[0.18em] flex items-center justify-between transition-colors ${
                     isActive
-                      ? 'bg-cyan-950/60 text-[#06b6d4] border border-[#06b6d4]/30'
-                      : 'text-slate-300 hover:bg-slate-900 hover:text-white'
+                      ? 'bg-cyan-950/50 text-cyan-300 border border-cyan-500/30'
+                      : 'text-slate-300 hover:bg-white/[0.04] hover:text-white'
                   }`}
                 >
                   <span>{link.label}</span>
-                  {isActive && <span className="w-2 h-2 rounded-full bg-[#06b6d4]" />}
+                  {isActive && <span className="w-1.5 h-1.5 rounded-full bg-cyan-400" />}
                 </Link>
               );
             })}
 
             {ctaLink && (
-              <div className="pt-4 mt-2 border-t border-slate-800">
+              <div className="pt-4 mt-2 border-t border-white/[0.08]">
                 <Link
                   href={ctaLink.href}
                   onClick={(e) => handleNavClick(e, ctaLink.href, ctaLink.id)}
-                  className="w-full text-center py-3.5 rounded-xl bg-[#06b6d4] hover:bg-cyan-400 text-slate-950 font-extrabold text-sm uppercase tracking-wider shadow-lg shadow-[#06b6d4]/20 block transition-all"
+                  className="w-full text-center py-3.5 rounded-full bg-gradient-to-r from-cyan-500 to-teal-400 text-slate-950 font-bold text-xs uppercase tracking-[0.2em] shadow-lg shadow-cyan-500/20 block transition-all"
                 >
                   {ctaLink.label}
                 </Link>

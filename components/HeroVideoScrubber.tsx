@@ -5,7 +5,7 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 export interface HeroVideoScrubberProps {
   /**
    * Base path or prefix for frame images.
-   * e.g., '/videos/video_1_frames/frame_'
+   * Defaults to '/videos/video_3_frames/frame_'
    */
   videoFramePath?: string;
   /**
@@ -29,7 +29,7 @@ export interface HeroVideoScrubberProps {
    */
   extension?: string;
   /**
-   * Height of the scroll container to control scrub speed (e.g., '300vh', '400vh')
+   * Height of the scroll container to control scrub speed (e.g., '350vh')
    */
   scrollContainerHeight?: string;
 }
@@ -37,8 +37,8 @@ export interface HeroVideoScrubberProps {
 const HeroVideoScrubber: React.FC<HeroVideoScrubberProps> = ({
   videoFramePath = '/videos/video_3_frames/frame_',
   totalFrames = 300,
-  overlayTitle = 'We Design Smiles - Professional Dental Care',
-  overlayDescription = 'Your journey to perfect smiles starts here.',
+  overlayTitle = 'Smile Shine — Bespoke Dental Artistry',
+  overlayDescription = 'Where clinical master-craft meets pure sanctuary serenity.',
   padLength = 4,
   extension = 'webp',
   scrollContainerHeight = '350vh',
@@ -55,11 +55,9 @@ const HeroVideoScrubber: React.FC<HeroVideoScrubberProps> = ({
   const rafId = useRef<number | null>(null);
   const targetFrameRef = useRef<number>(1);
 
-  // Helper to format frame path
   const getFrameUrl = useCallback(
     (index: number) => {
       const paddedIndex = String(index).padStart(padLength, '0');
-      // If path ends with slash, append frame_XXXX.ext, otherwise append directly
       const cleanPath = videoFramePath.endsWith('/')
         ? `${videoFramePath}frame_${paddedIndex}.${extension}`
         : `${videoFramePath}${paddedIndex}.${extension}`;
@@ -68,14 +66,12 @@ const HeroVideoScrubber: React.FC<HeroVideoScrubberProps> = ({
     [videoFramePath, padLength, extension]
   );
 
-  // Draw frame on canvas with high-DPI crisp rendering and 16:9 cover/contain fit
   const renderFrameToCanvas = useCallback((img: HTMLImageElement) => {
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
-    // Set canvas internal resolution to 16:9 1920x1080 (or native image dimensions)
     if (canvas.width !== img.naturalWidth || canvas.height !== img.naturalHeight) {
       canvas.width = img.naturalWidth || 1920;
       canvas.height = img.naturalHeight || 1080;
@@ -85,7 +81,6 @@ const HeroVideoScrubber: React.FC<HeroVideoScrubberProps> = ({
     ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
   }, []);
 
-  // 1. Intersection Observer for Lazy Loading
   useEffect(() => {
     const observer = new IntersectionObserver(
       ([entry]) => {
@@ -95,7 +90,7 @@ const HeroVideoScrubber: React.FC<HeroVideoScrubberProps> = ({
       },
       {
         root: null,
-        rootMargin: '250px 0px', // Preload before user reaches the section
+        rootMargin: '250px 0px',
         threshold: 0.01,
       }
     );
@@ -109,14 +104,12 @@ const HeroVideoScrubber: React.FC<HeroVideoScrubberProps> = ({
     };
   }, []);
 
-  // 2. Progressive Frame Preloading (once visible)
   useEffect(() => {
     if (!isVisible) return;
 
     let isMounted = true;
     let loadedCount = 0;
 
-    // Load initial essential frames (first 25) first for instant interactivity
     const preloadFrame = (index: number): Promise<HTMLImageElement> => {
       return new Promise((resolve) => {
         if (imagesCache.current.has(index)) {
@@ -132,7 +125,6 @@ const HeroVideoScrubber: React.FC<HeroVideoScrubberProps> = ({
           loadedCount++;
           setLoadProgress(Math.round((loadedCount / totalFrames) * 100));
 
-          // Draw the very first frame immediately
           if (index === 1 && canvasRef.current) {
             renderFrameToCanvas(img);
             setIsLoaded(true);
@@ -146,20 +138,17 @@ const HeroVideoScrubber: React.FC<HeroVideoScrubberProps> = ({
       });
     };
 
-    // Priority batch 1: First 20 frames
     const initialBatch = Array.from({ length: Math.min(20, totalFrames) }, (_, i) => i + 1);
     Promise.all(initialBatch.map(preloadFrame)).then(() => {
       if (!isMounted) return;
       setIsLoaded(true);
 
-      // Priority batch 2: Remaining frames progressively loaded in background
       const remainingFrames = Array.from(
         { length: totalFrames - initialBatch.length },
         (_, i) => i + initialBatch.length + 1
       );
 
       remainingFrames.forEach((frameIdx, idx) => {
-        // Stagger load requests slightly to prevent network choke
         setTimeout(() => {
           if (isMounted) preloadFrame(frameIdx);
         }, idx * 10);
@@ -171,7 +160,6 @@ const HeroVideoScrubber: React.FC<HeroVideoScrubberProps> = ({
     };
   }, [isVisible, totalFrames, getFrameUrl, renderFrameToCanvas]);
 
-  // 3. Smooth Scroll Scrubbing with requestAnimationFrame
   useEffect(() => {
     if (!isVisible) return;
 
@@ -183,11 +171,9 @@ const HeroVideoScrubber: React.FC<HeroVideoScrubberProps> = ({
 
       if (scrollableHeight <= 0) return;
 
-      // Calculate progress from 0.0 (top of hero) to 1.0 (bottom of hero container)
       const currentScroll = -rect.top;
       const progress = Math.min(Math.max(currentScroll / scrollableHeight, 0), 1);
 
-      // Map progress to frame number [1 .. totalFrames]
       const targetFrame = Math.min(
         Math.max(Math.floor(progress * (totalFrames - 1)) + 1, 1),
         totalFrames
@@ -200,12 +186,10 @@ const HeroVideoScrubber: React.FC<HeroVideoScrubberProps> = ({
           const nextFrame = targetFrameRef.current;
           setCurrentFrame(nextFrame);
 
-          // Draw cached frame if available
           const cachedImg = imagesCache.current.get(nextFrame);
           if (cachedImg && cachedImg.complete) {
             renderFrameToCanvas(cachedImg);
           } else {
-            // Fallback: If not cached yet, fetch on demand
             const tempImg = new Image();
             tempImg.src = getFrameUrl(nextFrame);
             tempImg.onload = () => {
@@ -220,16 +204,12 @@ const HeroVideoScrubber: React.FC<HeroVideoScrubberProps> = ({
 
     window.addEventListener('scroll', handleScroll, { passive: true });
     window.addEventListener('resize', handleScroll, { passive: true });
-
-    // Initial check
     handleScroll();
 
     return () => {
       window.removeEventListener('scroll', handleScroll);
       window.removeEventListener('resize', handleScroll);
-      if (rafId.current) {
-        cancelAnimationFrame(rafId.current);
-      }
+      if (rafId.current) cancelAnimationFrame(rafId.current);
     };
   }, [isVisible, totalFrames, getFrameUrl, renderFrameToCanvas]);
 
@@ -238,14 +218,14 @@ const HeroVideoScrubber: React.FC<HeroVideoScrubberProps> = ({
       ref={containerRef}
       style={{ height: scrollContainerHeight }}
       className="relative w-full bg-slate-950 text-slate-900"
-      aria-label="Clinic Walkthrough Hero Section"
+      aria-label="Smile Shine Hero Experience"
     >
-      {/* Sticky Viewport Container: Pinned 100vh during scrub */}
+      {/* Sticky 100vh Viewport Wrapper */}
       <div
         ref={stickyRef}
         className="sticky top-0 h-screen w-full overflow-hidden flex items-center justify-center bg-slate-950"
       >
-        {/* Aspect Ratio 16:9 Video Canvas Wrapper */}
+        {/* 16:9 Aspect Video Container */}
         <div className="relative w-full aspect-video max-h-screen flex items-center justify-center">
           {/* Main Scrubber Canvas */}
           <canvas
@@ -253,66 +233,66 @@ const HeroVideoScrubber: React.FC<HeroVideoScrubberProps> = ({
             className={`w-full h-full object-contain transition-opacity duration-700 ease-out ${
               isLoaded ? 'opacity-100' : 'opacity-0'
             }`}
-            aria-label={`Walkthrough video frame ${currentFrame} of ${totalFrames}`}
+            aria-label={`Smile Shine virtual tour frame ${currentFrame} of ${totalFrames}`}
           />
 
-          {/* Fallback / Initial Loading Placeholder */}
+          {/* Luxury Loading Spinner */}
           {!isLoaded && (
-            <div className="absolute inset-0 flex flex-col items-center justify-center bg-slate-900 text-white z-10">
-              <div className="relative w-14 h-14 mb-4">
-                <div className="absolute inset-0 rounded-full border-4 border-cyan-500/20 animate-ping" />
-                <div className="w-14 h-14 rounded-full border-4 border-t-cyan-400 border-cyan-500/30 animate-spin" />
+            <div className="absolute inset-0 flex flex-col items-center justify-center bg-slate-950 text-white z-10">
+              <div className="relative w-16 h-16 mb-5">
+                <div className="absolute inset-0 rounded-full border border-cyan-500/20 animate-ping" />
+                <div className="w-16 h-16 rounded-full border-2 border-t-cyan-400 border-cyan-500/20 animate-spin" />
               </div>
-              <p className="text-sm font-semibold tracking-wider uppercase text-cyan-400">
-                Loading Clinic Walkthrough
-              </p>
-              <span className="text-xs text-slate-400 mt-1">{loadProgress}%</span>
+              <span className="text-xs font-semibold tracking-[0.25em] uppercase text-cyan-400 font-display">
+                Loading Experience
+              </span>
+              <span className="text-[11px] font-mono text-slate-500 mt-1">{loadProgress}%</span>
             </div>
           )}
 
-          {/* Top Subtle Brand Tag */}
-          <div className="absolute top-6 left-6 z-20 pointer-events-none hidden sm:flex items-center gap-2.5 px-3.5 py-1.5 rounded-full bg-slate-900/60 backdrop-blur-md border border-white/10 shadow-lg">
-            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-            <span className="text-xs font-semibold uppercase tracking-widest text-slate-200">
+          {/* Top Subtle Luxury Badge (Left) */}
+          <div className="absolute top-6 left-6 z-20 pointer-events-none hidden sm:flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-slate-950/70 backdrop-blur-xl border border-white/10 shadow-xl">
+            <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse" />
+            <span className="text-[10px] font-semibold uppercase tracking-[0.22em] text-slate-300">
               Interactive 3D Walkthrough
             </span>
           </div>
 
-          {/* Frame Counter Badge (Top Right) */}
-          <div className="absolute top-6 right-6 z-20 pointer-events-none hidden sm:flex items-center gap-1.5 px-3 py-1 rounded-md bg-black/40 backdrop-blur-md border border-white/10 text-[11px] font-mono text-slate-300">
-            <span>FRAME</span>
+          {/* Frame Counter HUD (Right) */}
+          <div className="absolute top-6 right-6 z-20 pointer-events-none hidden sm:flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-slate-950/70 backdrop-blur-xl border border-white/10 text-[10px] font-mono text-slate-300">
+            <span className="text-slate-400">FRAME</span>
             <span className="text-cyan-400 font-bold">{String(currentFrame).padStart(3, '0')}</span>
-            <span className="text-slate-500">/</span>
+            <span className="text-slate-600">/</span>
             <span>{totalFrames}</span>
           </div>
 
-          {/* Bottom 15% Gradient Overlay with Text */}
-          <div className="absolute bottom-0 inset-x-0 h-[18%] sm:h-[15%] min-h-[110px] bg-gradient-to-t from-white/85 to-transparent flex flex-col justify-end items-center pb-5 sm:pb-7 md:pb-9 px-4 z-20 pointer-events-auto backdrop-blur-[0.5px]">
+          {/* Bottom 15% White Gradient Overlay with Haute Typography */}
+          <div className="absolute bottom-0 inset-x-0 h-[18%] sm:h-[15%] min-h-[110px] bg-gradient-to-t from-white/85 via-white/50 to-transparent flex flex-col justify-end items-center pb-5 sm:pb-7 md:pb-8 px-4 z-20 pointer-events-auto backdrop-blur-[0.5px]">
             <div className="max-w-4xl mx-auto text-center">
-              {/* Main Title */}
-              <h1 className="text-lg sm:text-2xl md:text-3xl lg:text-4xl font-extrabold tracking-tight text-slate-900 drop-shadow-sm">
+              {/* Primary Haute Serif Headline */}
+              <h1 className="font-serif text-xl sm:text-2xl md:text-3xl lg:text-4xl font-semibold tracking-tight text-slate-950 drop-shadow-sm leading-tight">
                 {overlayTitle}
               </h1>
 
-              {/* Subheading Descriptor */}
-              <p className="text-xs sm:text-sm md:text-base font-semibold text-slate-700 mt-1 sm:mt-1.5 tracking-normal">
+              {/* Subtext Descriptor */}
+              <p className="font-sans text-[11px] sm:text-xs md:text-sm font-semibold tracking-[0.08em] text-slate-700 mt-1 uppercase">
                 {overlayDescription}
               </p>
             </div>
           </div>
 
-          {/* Interactive Scroll Indicator Guide */}
+          {/* Scroll Guide Indicator */}
           <div
             className={`absolute bottom-24 sm:bottom-28 left-1/2 -translate-x-1/2 z-20 flex flex-col items-center pointer-events-none transition-opacity duration-500 ${
               currentFrame > 20 ? 'opacity-0 pointer-events-none' : 'opacity-90'
             }`}
           >
-            <div className="flex flex-col items-center gap-1.5">
-              <span className="text-[10px] sm:text-xs font-bold uppercase tracking-widest text-slate-900/80 bg-white/70 backdrop-blur-md px-3 py-0.5 rounded-full border border-white/40 shadow-sm">
-                Scroll to scrub video
+            <div className="flex flex-col items-center gap-2">
+              <span className="text-[9px] sm:text-[10px] font-bold uppercase tracking-[0.25em] text-slate-900 bg-white/80 backdrop-blur-md px-3.5 py-0.5 rounded-full border border-white/50 shadow-md">
+                Scroll to scrub
               </span>
-              <div className="w-5 h-8 sm:w-6 sm:h-9 rounded-full border-2 border-slate-800/60 bg-white/40 backdrop-blur-sm flex justify-center p-1 shadow-md">
-                <div className="w-1.5 h-2 rounded-full bg-slate-800 animate-bounce" />
+              <div className="w-5 h-8 sm:w-5.5 sm:h-8.5 rounded-full border-2 border-slate-900/60 bg-white/40 backdrop-blur-sm flex justify-center p-1 shadow-md">
+                <div className="w-1 h-2 rounded-full bg-slate-900 animate-bounce" />
               </div>
             </div>
           </div>

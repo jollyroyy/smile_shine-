@@ -7,11 +7,22 @@ module.exports = {
   ],
   theme: {
     extend: {
+      fontFamily: {
+        sans: ['var(--font-sans)', 'system-ui', '-apple-system', 'sans-serif'],
+        serif: ['var(--font-serif)', 'Playfair Display', 'Georgia', 'serif'],
+        display: ['var(--font-display)', 'Plus Jakarta Sans', 'sans-serif'],
+      },
       colors: {
         brand: {
-          blue: '#0284c7',
           teal: '#06b6d4',
+          cyan: '#22d3ee',
+          sky: '#0284c7',
+          platinum: '#f8fafc',
         },
+      },
+      letterSpacing: {
+        widest: '.2em',
+        luxury: '.25em',
       },
     },
   },
