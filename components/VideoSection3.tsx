@@ -268,14 +268,6 @@ export const VideoSection3: React.FC<VideoSection3Props> = ({
             </div>
           )}
 
-          {/* Top Subtle Luxury Badge (Left) */}
-          <div className="absolute top-6 left-6 z-20 pointer-events-none hidden sm:flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-slate-950/70 backdrop-blur-xl border border-white/10 shadow-xl">
-            <span className="w-1.5 h-1.5 rounded-full bg-cyan-400" />
-            <span className="text-[10px] font-semibold uppercase tracking-[0.22em] text-slate-300">
-              Patient Lounge → Operatory Suites
-            </span>
-          </div>
-
           {/* Frame Counter HUD (Right) */}
           <div className="absolute top-6 right-6 z-20 pointer-events-none hidden sm:flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-slate-950/70 backdrop-blur-xl border border-white/10 text-[10px] font-mono text-slate-300">
             <span className="text-slate-400">FLOW</span>
